@@ -1,0 +1,2282 @@
+﻿<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>인사이트 카드 뷰어 | 철학·심리학·경제학의 깊은 통찰</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💡</text></svg>">
+  
+  <!-- Web Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              philosophy: '#6366f1',
+              psychology: '#10b981',
+              economics: '#f59e0b'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- External Stylesheet with Fallback Support -->
+  <link rel="stylesheet" href="./css/style.css">
+
+  <style>
+    /* Inlined Core 3D Styles to Guarantee 100% Functionality on GitHub Pages */
+    :root {
+      --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: #0b0f19;
+      color: #f1f5f9;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-serif-quote {
+      font-family: var(--font-serif);
+    }
+
+    /* Ambient Glow */
+    .ambient-glow {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 580px;
+      height: 580px;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.38;
+      pointer-events: none;
+      transition: background-color 0.8s ease;
+      z-index: 0;
+    }
+
+    /* 3D Perspective Stage */
+    .card-stage {
+      perspective: 1200px;
+      -webkit-perspective: 1200px;
+      perspective-origin: 50% 50%;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+    }
+
+    /* Main Insight Card with True 3D transforms */
+    .insight-card {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      min-height: 490px;
+      background: rgba(18, 24, 38, 0.85);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 30px;
+      box-shadow: 
+        0 25px 60px -15px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      will-change: transform, opacity;
+      transition: box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+
+    .insight-card:hover {
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: 
+        0 35px 70px -15px rgba(0, 0, 0, 0.85),
+        0 0 45px -10px var(--card-glow, rgba(99, 102, 241, 0.25)),
+        0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    }
+
+    .quote-watermark {
+      position: absolute;
+      top: 20px;
+      left: 28px;
+      font-family: var(--font-serif);
+      font-size: 150px;
+      line-height: 1;
+      color: rgba(255, 255, 255, 0.035);
+      pointer-events: none;
+      user-select: none;
+      font-style: italic;
+      font-weight: 700;
+      z-index: 0;
+    }
+
+    /* Dramatic 3D Card Transition Animations */
+    .card-anim-exit-next {
+      animation: cardExit3DNext 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+    .card-anim-enter-next {
+      animation: cardEnter3DNext 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+    .card-anim-exit-prev {
+      animation: cardExit3DPrev 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+    .card-anim-enter-prev {
+      animation: cardEnter3DPrev 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+
+    @keyframes cardExit3DNext {
+      0% {
+        transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg) rotateX(0deg);
+        opacity: 1;
+        filter: blur(0px);
+      }
+      100% {
+        transform: perspective(1200px) translate3d(-180px, -15px, -180px) rotateY(-28deg) rotateZ(-3deg);
+        opacity: 0;
+        filter: blur(6px);
+      }
+    }
+
+    @keyframes cardEnter3DNext {
+      0% {
+        transform: perspective(1200px) translate3d(180px, 15px, -180px) rotateY(28deg) rotateZ(3deg);
+        opacity: 0;
+        filter: blur(6px);
+      }
+      100% {
+        transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg) rotateX(0deg) rotateZ(0deg);
+        opacity: 1;
+        filter: blur(0px);
+      }
+    }
+
+    @keyframes cardExit3DPrev {
+      0% {
+        transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
+        opacity: 1;
+        filter: blur(0px);
+      }
+      100% {
+        transform: perspective(1200px) translate3d(180px, -15px, -180px) rotateY(28deg) rotateZ(3deg);
+        opacity: 0;
+        filter: blur(6px);
+      }
+    }
+
+    @keyframes cardEnter3DPrev {
+      0% {
+        transform: perspective(1200px) translate3d(-180px, 15px, -180px) rotateY(-28deg) rotateZ(-3deg);
+        opacity: 0;
+        filter: blur(6px);
+      }
+      100% {
+        transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
+        opacity: 1;
+        filter: blur(0px);
+      }
+    }
+
+    /* 3D Flip */
+    .card-anim-flip-exit {
+      animation: cardFlip3DExit 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+    .card-anim-flip-enter {
+      animation: cardFlip3DEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+
+    @keyframes cardFlip3DExit {
+      0% { transform: perspective(1200px) rotateY(0deg) translateZ(0); opacity: 1; }
+      100% { transform: perspective(1200px) rotateY(90deg) translateZ(-100px) scale(0.9); opacity: 0; }
+    }
+    @keyframes cardFlip3DEnter {
+      0% { transform: perspective(1200px) rotateY(-90deg) translateZ(-100px) scale(0.9); opacity: 0; }
+      100% { transform: perspective(1200px) rotateY(0deg) translateZ(0) scale(1); opacity: 1; }
+    }
+
+    /* Button Shimmer */
+    @keyframes shimmerWave {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .btn-shimmer {
+      background: linear-gradient(
+        90deg,
+        rgba(99, 102, 241, 1) 0%,
+        rgba(168, 85, 247, 1) 35%,
+        rgba(236, 72, 153, 1) 65%,
+        rgba(99, 102, 241, 1) 100%
+      );
+      background-size: 200% auto;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .btn-shimmer:hover {
+      animation: shimmerWave 2.2s linear infinite;
+      box-shadow: 0 0 28px rgba(168, 85, 247, 0.5);
+    }
+    .btn-shimmer:active {
+      transform: scale(0.98);
+    }
+
+    /* Glass Pills */
+    .glass-pill {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Heart Pop */
+    @keyframes heartPop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.4) rotate(-8deg); }
+      75% { transform: scale(0.9) rotate(4deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    .anim-heart-pop {
+      animation: heartPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Toast */
+    @keyframes toastSlideUp {
+      0% { opacity: 0; transform: translate(-50%, 20px) scale(0.95); }
+      100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    }
+    .toast-enter {
+      animation: toastSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col justify-between relative selection:bg-indigo-500/30 selection:text-indigo-200">
+
+  <!-- Ambient Glow Effect -->
+  <div id="ambient-glow" class="ambient-glow bg-indigo-600"></div>
+
+  <!-- Background Grid -->
+  <div class="fixed inset-0 bg-[linear-gradient(to_right,#1e293b0f_1px,transparent_1px),linear-gradient(to_bottom,#1e293b0f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none z-0"></div>
+
+  <!-- Header -->
+  <header class="relative z-10 w-full max-w-6xl mx-auto px-5 py-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-[1px] shadow-lg shadow-indigo-500/20">
+        <div class="w-full h-full bg-[#0d121f] rounded-[15px] flex items-center justify-center text-lg">
+          💡
+        </div>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+          인사이트 카드 뷰어
+        </h1>
+        <p class="text-xs text-slate-400 font-medium">철학 · 심리학 · 경제학의 정수</p>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- 3D Motion Mode Selector -->
+      <div class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-400">
+        <span>3D 모션:</span>
+        <select id="select-anim-mode" class="bg-transparent text-slate-200 font-medium focus:outline-none cursor-pointer">
+          <option value="deck" class="bg-slate-900 text-slate-200">덱 스와이프</option>
+          <option value="flip" class="bg-slate-900 text-slate-200">3D 플립</option>
+        </select>
+      </div>
+
+      <!-- Mute/Sound Toggle -->
+      <button id="btn-toggle-sound" class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-indigo-400 transition-all shadow-sm" title="사운드 켜기/끄기 (M)">
+        <svg id="sound-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+        </svg>
+      </button>
+
+      <!-- Bookmark Drawer Toggle -->
+      <button id="btn-open-drawer" class="relative flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white transition-all shadow-sm group">
+        <svg class="w-4 h-4 text-rose-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <span class="text-xs font-semibold">내 북마크</span>
+        <span id="header-bookmark-badge" style="display:none;" class="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-rose-500 text-white min-w-[18px] text-center">
+          0
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Category Filter Tabs -->
+  <nav class="relative z-10 w-full max-w-xl mx-auto px-4 mb-2">
+    <div class="flex items-center justify-between p-1.5 rounded-2xl bg-slate-900/80 border border-slate-800/80 backdrop-blur-md shadow-inner">
+      <button class="category-tab active flex-1 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-500/25" data-category="all">
+        전체 보기
+      </button>
+      <button class="category-tab flex-1 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-slate-200" data-category="philosophy">
+        철학
+      </button>
+      <button class="category-tab flex-1 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-slate-200" data-category="psychology">
+        심리학
+      </button>
+      <button class="category-tab flex-1 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-slate-200" data-category="economics">
+        경제학
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Card Section -->
+  <main class="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-4 w-full">
+    <div id="card-container" class="card-stage w-full flex justify-center items-center">
+      
+      <!-- 3D Card Article -->
+      <article id="insight-card" class="insight-card p-7 sm:p-10 flex flex-col justify-between">
+        <span class="quote-watermark">“</span>
+
+        <!-- Top: Category Badge -->
+        <div>
+          <div class="flex items-center justify-between mb-6">
+            <span id="card-category-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase border bg-indigo-500/10 text-indigo-400 border-indigo-500/30">
+              철학
+            </span>
+            <span class="text-xs text-slate-500 flex items-center gap-1 font-mono">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+              랜덤 인사이트
+            </span>
+          </div>
+
+          <!-- Main Quote -->
+          <div class="mb-4">
+            <h2 id="card-quote-ko" class="text-2xl sm:text-3xl lg:text-[32px] font-bold text-slate-100 leading-snug sm:leading-snug tracking-tight">
+              "나를 죽이지 못하는 고통은 나를 더욱 강하게 만든다."
+            </h2>
+          </div>
+
+          <!-- Original Quote -->
+          <p id="card-quote-original" class="font-serif-quote italic text-sm sm:text-base text-slate-400 font-normal mb-6 leading-relaxed">
+            — "Was mich nicht umbringt, macht mich stärker."
+          </p>
+
+          <!-- Author Info -->
+          <div class="flex flex-col gap-0.5 border-l-2 border-indigo-500/50 pl-3.5 mb-6">
+            <span id="card-author" class="text-base sm:text-lg font-bold text-slate-200">
+              프리드리히 니체
+            </span>
+            <span id="card-author-meta" class="text-xs sm:text-sm text-slate-400 font-medium">
+              Friedrich Nietzsche · 우상의 황혼 (1889)
+            </span>
+          </div>
+        </div>
+
+        <!-- Middle: Deep Insight Note -->
+        <div class="mt-2 mb-6">
+          <div class="p-4 sm:p-4.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm">
+            <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
+              <span>🌱 사유의 씨앗</span>
+            </div>
+            <p id="card-insight-text" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              시련과 실존적 고뇌는 피해야 할 재앙이 아니라, 영혼의 군살을 깎아내고 주체성을 단련시키는 가장 순수한 촉매제입니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Bottom Tools & Tags -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-800/80">
+          <div id="card-tags" class="flex flex-wrap items-center gap-1.5">
+            <span class="px-2.5 py-1 text-xs rounded-lg glass-pill text-slate-300">#자기극복</span>
+            <span class="px-2.5 py-1 text-xs rounded-lg glass-pill text-slate-300">#성장의지</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Bookmark Button -->
+            <button id="btn-bookmark" class="p-2.5 rounded-xl border border-slate-700/60 bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 transition-all flex items-center gap-1.5 text-xs font-medium cursor-pointer" title="내 북마크에 추가 (B)">
+              <svg id="btn-bookmark-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+              <span class="hidden sm:inline">북마크</span>
+            </button>
+
+            <!-- Copy Text Button -->
+            <button id="btn-copy" class="p-2.5 rounded-xl border border-slate-700/60 bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white transition-all cursor-pointer" title="문구 복사하기 (C)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+              </svg>
+            </button>
+
+            <!-- Save Image Button -->
+            <button id="btn-save-image" class="p-2.5 rounded-xl border border-slate-700/60 bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white transition-all cursor-pointer" title="카드 이미지 저장 (PNG)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="mt-7 flex items-center justify-center gap-3 w-full max-w-md">
+      <!-- Prev Button -->
+      <button id="btn-prev" class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all shadow-lg active:scale-95 disabled:opacity-30 disabled:pointer-events-none cursor-pointer" title="이전 카드 보기 (←)">
+        <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+
+      <!-- Next Insight Button -->
+      <button id="btn-next" class="btn-shimmer flex-1 py-4 px-6 rounded-2xl text-white font-bold text-base tracking-wide flex items-center justify-center gap-2.5 shadow-xl shadow-indigo-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer" title="다음 인사이트 보기 (Space)">
+        <svg class="w-5 h-5 animate-pulse pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        <span class="pointer-events-none">다음 인사이트 보기</span>
+        <kbd class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono bg-white/20 rounded-md text-white/90 pointer-events-none">Space</kbd>
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer Shortcuts -->
+  <footer class="relative z-10 w-full py-4 text-center text-xs text-slate-500">
+    <div class="flex items-center justify-center flex-wrap gap-x-4 gap-y-1">
+      <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">Space</kbd> 다음 문구</span>
+      <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">B</kbd> 북마크</span>
+      <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">C</kbd> 문구 복사</span>
+      <span class="hidden sm:inline"><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">M</kbd> 소리 켜기/끄기</span>
+    </div>
+  </footer>
+
+  <!-- Drawer: '내 북마크' -->
+  <div id="drawer-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity"></div>
+  
+  <aside id="drawer-panel" class="drawer-panel fixed top-0 right-0 h-full w-full sm:w-[420px] bg-[#0d1322] border-l border-slate-800/90 z-50 flex flex-col justify-between translate-x-full shadow-2xl">
+    <div class="p-6 border-b border-slate-800/80 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="p-2 rounded-xl bg-rose-500/10 text-rose-400">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="font-bold text-base text-slate-100">내 북마크 컬렉션</h3>
+          <p class="text-xs text-slate-400">마음에 닿은 소중한 사유의 기록</p>
+        </div>
+      </div>
+      <button id="btn-close-drawer" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer" title="닫기 (Esc)">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-5 space-y-3.5" id="drawer-scroll-container">
+      <div id="drawer-empty" class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
+        <div class="w-16 h-16 rounded-full bg-slate-800/50 flex items-center justify-center text-2xl mb-3">
+          📑
+        </div>
+        <p class="font-semibold text-slate-300 text-sm mb-1">아직 북마크한 문구가 없습니다</p>
+        <p class="text-xs text-slate-400 max-w-[220px]">
+          카드 하단의 하트 아이콘이나 단축키 <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">B</kbd>를 눌러 마음에 드는 인사이트를 모아보세요.
+        </p>
+      </div>
+      <div id="drawer-bookmark-list" class="space-y-3"></div>
+    </div>
+
+    <div class="p-4 border-t border-slate-800/80 bg-slate-950/40 flex items-center justify-between">
+      <button id="btn-clear-all-bookmarks" class="text-xs text-rose-400 hover:text-rose-300 font-medium transition-colors hidden cursor-pointer">
+        북마크 전체 비우기
+      </button>
+      <span class="text-xs text-slate-500 ml-auto">카드를 누르면 해당 문구로 이동합니다</span>
+    </div>
+  </aside>
+
+  <!-- Toast Notification -->
+  <div id="toast-notification" class="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-slate-900/95 border border-slate-700 text-slate-100 text-xs sm:text-sm font-semibold shadow-2xl backdrop-blur-md hidden flex items-center gap-2">
+    <span class="text-emerald-400">✓</span>
+    <span id="toast-text">알림 내용</span>
+  </div>
+
+  <!-- Scripts: Loaded with relative paths (./) for GitHub Pages compatibility -->
+  <script>
+/**
+ * Insight Card Viewer - Master Insights Database
+ * Categories: Philosophy (철학), Psychology (심리학), Economics (경제학)
+ */
+
+// Bind globally to ensure availability across all execution environments
+window.INSIGHTS_DATA = [
+  // ==========================================
+  // 1. 철학 (PHILOSOPHY) - 22 Quotes
+  // ==========================================
+  {
+    id: "phil-1",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "프리드리히 니체",
+    authorEn: "Friedrich Nietzsche",
+    source: "우상의 황혼 (Twilight of the Idols)",
+    year: "1889",
+    quoteKo: "나를 죽이지 못하는 고통은 나를 더욱 강하게 만든다.",
+    quoteOriginal: "Was mich nicht umbringt, macht mich stärker.",
+    insight: "시련과 실존적 고뇌는 피해야 할 재앙이 아니라, 영혼의 군살을 깎아내고 주체성을 단련시키는 가장 순수한 촉매제입니다.",
+    tags: ["자기극복", "성장의지", "내면의힘"]
+  },
+  {
+    id: "phil-2",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "마르쿠스 아우렐리우스",
+    authorEn: "Marcus Aurelius",
+    source: "명상록 (Meditations)",
+    year: "180",
+    quoteKo: "당신에게 일어나는 외적 사건을 통제할 수는 없지만, 그것을 대하는 마음의 태도는 온전히 당신에게 달려 있다.",
+    quoteOriginal: "You have power over your mind - not outside events. Realize this, and you will find strength.",
+    insight: "외부 세상의 소란에 휩쓸리지 않고 내면의 평정을 유지하는 스토아적 지혜는 상황을 바꾸는 것이 아니라 상황을 바라보는 시선을 바꿀 때 시작됩니다.",
+    tags: ["스토아", "마음의평정", "통제력"]
+  },
+  {
+    id: "phil-3",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "소크라테스",
+    authorEn: "Socrates",
+    source: "변명 (Apology) - 플라톤 기록",
+    year: "BC 399",
+    quoteKo: "검토되지 않은 삶은 살아갈 가치가 없다.",
+    quoteOriginal: "The unexamined life is not worth living.",
+    insight: "관성과 타인의 기준에 이끌려 무비판적으로 흘러가는 삶을 멈추고, '나는 왜 이렇게 살고 있는가'를 묻는 순간 진정한 자아가 눈을 뜹니다.",
+    tags: ["자기성찰", "사유", "삶의본질"]
+  },
+  {
+    id: "phil-4",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "장 폴 사르트르",
+    authorEn: "Jean-Paul Sartre",
+    source: "실존주의는 휴머니즘이다",
+    year: "1946",
+    quoteKo: "인간은 자유라는 형벌에 처해 있다. 일단 세상에 내던져지면 자신의 모든 행동에 책임을 져야 하기 때문이다.",
+    quoteOriginal: "Man is condemned to be free; because once thrown into the world, he is responsible for everything he does.",
+    insight: "선택하지 않는 것조차 하나의 선택입니다. 우리의 본질은 미리 정해진 것이 아니라 매 순간 우리가 내리는 선택과 결단으로 완성됩니다.",
+    tags: ["실존", "자유", "책임"]
+  },
+  {
+    id: "phil-5",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "루트비히 비트겐슈타인",
+    authorEn: "Ludwig Wittgenstein",
+    source: "논리철학 논고 (Tractatus Logico-Philosophicus)",
+    year: "1921",
+    quoteKo: "내 언어의 한계는 내 세계의 한계를 의미한다.",
+    quoteOriginal: "The limits of my language mean the limits of my world.",
+    insight: "우리가 세상을 인식하고 확장하는 범위는 우리가 다룰 수 있는 언어와 개념의 정교함에 정비례합니다. 어휘를 넓히는 것은 곧 세계를 넓히는 일입니다.",
+    tags: ["언어", "세계관", "인식론"]
+  },
+  {
+    id: "phil-6",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "바뤼흐 스피노자",
+    authorEn: "Baruch Spinoza",
+    source: "에티카 (Ethica)",
+    year: "1677",
+    quoteKo: "울지 마라, 분노하지 마라, 다만 이해하라.",
+    quoteOriginal: "Non ridere, non lugere, neque detestari, sed intelligere.",
+    insight: "맹목적인 감정에 압도당하거나 상대를 비난하기 전에, 사건과 인간 행동의 필연적 인과관계를 통찰할 때 진정한 자유와 정신적 해방이 찾아옵니다.",
+    tags: ["이해", "지적자유", "통찰"]
+  },
+  {
+    id: "phil-7",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "한나 아렌트",
+    authorEn: "Hannah Arendt",
+    source: "예루살렘의 아이히만 (Eichmann in Jerusalem)",
+    year: "1963",
+    quoteKo: "타인의 처지를 생각하지 못하는 무사유(Thoughtlessness)는 인간에게서 가장 끔찍한 악을 불러일으킬 수 있다.",
+    quoteOriginal: "The sad truth is that most evil is done by people who never make up their minds to be good or evil.",
+    insight: "악은 거대한 광기에서만 나오는 것이 아닙니다. 자신의 행동이 타인에게 미칠 영향을 깊이 사유하지 않는 일상의 무신경함이 거대한 비극의 씨앗이 됩니다.",
+    tags: ["악의평범성", "비판적사유", "윤리"]
+  },
+  {
+    id: "phil-8",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "알베르 카뮈",
+    authorEn: "Albert Camus",
+    source: "시지프 신화 (The Myth of Sisyphus)",
+    year: "1942",
+    quoteKo: "우리는 바위를 다시 굴려 올리는 시지프가 행복하다고 상상해야 한다.",
+    quoteOriginal: "One must imagine Sisyphus happy.",
+    insight: "삶에 선험적인 의미가 없다 하더라도, 매일 반복되는 운명과 부조리에 당당히 맞서 굴러떨어지는 바위를 기꺼이 마주하는 반항 속에서 인간의 존엄이 빛납니다.",
+    tags: ["부조리", "열정", "실존적투쟁"]
+  },
+  {
+    id: "phil-9",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "아르투어 쇼펜하우어",
+    authorEn: "Arthur Schopenhauer",
+    source: "여록과 수필 (Parerga and Paralipomena)",
+    year: "1851",
+    quoteKo: "인간은 고독할 때만 온전히 자기 자신이 될 수 있다. 고독을 사랑하지 않는 자는 자유도 사랑하지 않는 자다.",
+    quoteOriginal: "A man can be himself only so long as he is alone; and if he does not love solitude, he will not love freedom.",
+    insight: "타인의 시선과 사회적 기대의 소음에서 벗어나 오롯이 침묵 속에 머무를 수 있는 힘이야말로 흔들리지 않는 자립의 척도입니다.",
+    tags: ["고독", "자기발견", "자유"]
+  },
+  {
+    id: "phil-10",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "에피쿠로스",
+    authorEn: "Epicurus",
+    source: "메노이케우스에게 보낸 편지",
+    year: "BC 300경",
+    quoteKo: "가진 것에 만족하지 못하는 사람은 온 세상을 다 가져도 불행하다.",
+    quoteOriginal: "He who is not satisfied with a little, is satisfied with nothing.",
+    insight: "참된 행복은 끝없는 욕망의 팽창이 아니라, 불필요한 결핍감을 덜어내고 몸의 고통이 없는 상태(아포니아)와 마음의 동요가 없는 상태(아타락시아)를 누리는 데 있습니다.",
+    tags: ["단순함", "아타락시아", "행복의기술"]
+  },
+  {
+    id: "phil-11",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "세네카",
+    authorEn: "Lucius Annaeus Seneca",
+    source: "인생의 짧음에 관하여 (De Brevitate Vitae)",
+    year: "49",
+    quoteKo: "인생은 짧은 것이 아니라, 우리가 많은 시간을 낭비하고 있을 뿐이다.",
+    quoteOriginal: "Life is long if you know how to use it.",
+    insight: "시간은 인간이 가진 가장 희소하고 값비싼 자산입니다. 타인의 욕망에 봉사하느라 바쁜 삶을 살고 있다면, 그것은 오래 산 것이 아니라 오래 머문 것에 불과합니다.",
+    tags: ["시간의가치", "스토아", "생의밀도"]
+  },
+  {
+    id: "phil-12",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "이마누엘 칸트",
+    authorEn: "Immanuel Kant",
+    source: "실천이성비판 (Critique of Practical Reason)",
+    year: "1788",
+    quoteKo: "생각하면 할수록 내 마음을 경외심으로 채우는 두 가지가 있다. 내 위의 별이 빛나는 하늘과 내 안의 도덕 법칙이다.",
+    quoteOriginal: "Two things fill the mind with ever new and increasing admiration: the starry heavens above me and the moral law within me.",
+    insight: "광대한 우주의 거대함 속에서도 인간이 존엄한 이유는 조건과 본능을 뛰어넘어 보편적 옳음을 지향하는 자율적 양심을 품고 있기 때문입니다.",
+    tags: ["도덕법칙", "인간존엄", "초월"]
+  },
+  {
+    id: "phil-13",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "라오스 (노자)",
+    authorEn: "Laozi",
+    source: "도덕경 (道德經)",
+    year: "BC 6세기경",
+    quoteKo: "최고의 선은 물과 같다. 물은 만물을 이롭게 하면서도 다투지 않고, 뭇사람들이 싫어하는 낮은 곳에 머문다.",
+    quoteOriginal: "上善若水. 水善利萬物而不爭, 處衆人之所惡, 故幾於道.",
+    insight: "강함으로 부딪치기보다 유연함으로 스며들고, 앞서려 하기보다 아래로 흐를 때 오히려 그 어떤 단단한 바위도 뚫어내는 무위의 위력이 발휘됩니다.",
+    tags: ["상선약수", "겸손", "유연성"]
+  },
+  {
+    id: "phil-14",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "에픽테토스",
+    authorEn: "Epictetus",
+    source: "엥케이리디온 (Enchiridion)",
+    year: "125",
+    quoteKo: "사람을 불안하게 만드는 것은 사물 그 자체가 아니라, 사물에 대해 품고 있는 사람들의 생각이다.",
+    quoteOriginal: "Men are disturbed not by things, but by the view which they take of them.",
+    insight: "우리에게 일어난 객관적 사실과 우리가 그 사실에 덧씌운 해석을 엄격히 분리할 수 있을 때, 마음의 불필요한 번뇌는 힘을 잃습니다.",
+    tags: ["인식의전환", "마음챙김", "스토아"]
+  },
+  {
+    id: "phil-15",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "쇠렌 키르케고르",
+    authorEn: "Søren Kierkegaard",
+    source: "불안의 개념 (The Concept of Anxiety)",
+    year: "1844",
+    quoteKo: "불안은 자유의 현기증이다.",
+    quoteOriginal: "Anxiety is the dizziness of freedom.",
+    insight: "불안하다는 것은 내가 무언가를 선택할 수 있는 무한한 가능성의 절벽 앞에 서 있다는 증거입니다. 불안을 두려워하지 말고 살아있음의 징표로 껴안아야 합니다.",
+    tags: ["불안", "가능성", "실존"]
+  },
+  {
+    id: "phil-16",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "미셸 푸코",
+    authorEn: "Michel Foucault",
+    source: "감시와 처벌 (Discipline and Punish)",
+    year: "1975",
+    quoteKo: "권력은 억압하기만 하는 것이 아니라, 지식을 생산하고 주체를 만들어낸다.",
+    quoteOriginal: "Power produces; it produces reality; it produces domains of objects and rituals of truth.",
+    insight: "우리가 지극히 '당연하고 자연스럽다'고 여기는 상식과 규범 이면에는 눈에 보이지 않게 작동하는 사회적 규율과 권력의 흔적이 깃들어 있습니다.",
+    tags: ["비판의식", "통찰", "사회구조"]
+  },
+  {
+    id: "phil-17",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "헤라클레이토스",
+    authorEn: "Heraclitus",
+    source: "단편 (Fragments)",
+    year: "BC 500경",
+    quoteKo: "아무도 같은 강물에 두 번 발을 담글 수 없다. 강물도, 그 사람도 이미 변했기 때문이다.",
+    quoteOriginal: "No man ever steps in the same river twice, for it's not the same river and he's not the same man.",
+    insight: "변하지 않는 유일한 진리는 '모든 것은 끊임없이 변한다'는 사실입니다. 변화에 저항하기보다 유전하는 흐름 자체를 타는 유연성이 요구됩니다.",
+    tags: ["무상", "변화", "흐름"]
+  },
+  {
+    id: "phil-18",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "자크 라캉",
+    authorEn: "Jacques Lacan",
+    source: "에크리 (Écrits)",
+    year: "1966",
+    quoteKo: "인간의 욕망은 타자의 욕망이다.",
+    quoteOriginal: "Man's desire is the desire of the Other.",
+    insight: "우리가 간절히 바라는 꿈과 성공이 과연 순수한 나의 갈망인지, 아니면 타인에게 인정받고 사랑받기 위해 내면화된 타인의 욕망인지 질문해야 합니다.",
+    tags: ["욕망", "주체성", "타인의시선"]
+  },
+  {
+    id: "phil-19",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "르네 데카르트",
+    authorEn: "René Descartes",
+    source: "방법서설 (Discourse on the Method)",
+    year: "1637",
+    quoteKo: "나는 생각한다, 고로 나는 존재한다.",
+    quoteOriginal: "Cogito, ergo sum.",
+    insight: "세상의 모든 것을 의심하고 부정하더라도, 바로 지금 의심하고 사유하고 있는 나의 의식만큼은 결코 지울 수 없는 확고부동한 진실입니다.",
+    tags: ["확신", "사유의출발점", "합리주의"]
+  },
+  {
+    id: "phil-20",
+    category: "philosophy",
+    categoryName: "철학",
+    categoryIcon: "sparkles",
+    author: "정약용",
+    authorEn: "Jeong Yak-yong (Dasan)",
+    source: "목민심서 (牧民心書)",
+    year: "1818",
+    quoteKo: "청렴은 목민관의 본무요, 모든 선의 근원이며 모든 덕의 뿌리다.",
+    quoteOriginal: "廉者 牧之本務 萬善之源 諸德之根.",
+    insight: "겉치레와 탐욕을 털어내고 투명한 양심을 지킬 때 비로소 판단이 흐려지지 않고 타인을 바르게 이끌 수 있는 진정한 리더십이 탄생합니다.",
+    tags: ["청렴", "지혜", "실학"]
+  },
+
+  // ==========================================
+  // 2. 심리학 (PSYCHOLOGY) - 20 Quotes
+  // ==========================================
+  {
+    id: "psych-1",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "카를 구스타프 융",
+    authorEn: "Carl Gustav Jung",
+    source: "심리학과 연금술 (Psychology and Alchemy)",
+    year: "1944",
+    quoteKo: "무의식을 의식화하지 않으면, 그것이 당신의 삶을 지배하며 당신은 그것을 운명이라 부르게 될 것이다.",
+    quoteOriginal: "Until you make the unconscious conscious, it will direct your life and you will call it fate.",
+    insight: "내면의 억압된 상처, 그림자(Shadow), 콤플렉스를 용기 있게 직면하고 조명할 때 비로소 자동 조종 장치처럼 반복되던 삶의 패턴에서 벗어납니다.",
+    tags: ["무의식", "그림자", "자기실현"]
+  },
+  {
+    id: "psych-2",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "빅터 프랭클",
+    authorEn: "Viktor E. Frankl",
+    source: "죽음의 수용소에서 (Man's Search for Meaning)",
+    year: "1946",
+    quoteKo: "자극과 반응 사이에는 공간이 있다. 그 공간에 우리의 선택의 자유와 성장이 존재한다.",
+    quoteOriginal: "Between stimulus and response there is a space. In that space is our power to choose our response.",
+    insight: "어떤 고통스러운 외부 자극이 주어지더라도 즉각적으로 굴복하지 않고, 단 1초의 틈을 두고 내 반응을 주체적으로 선택하는 데 인간의 위대함이 있습니다.",
+    tags: ["의미치료", "선택의자유", "회복탄력성"]
+  },
+  {
+    id: "psych-3",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "알프레드 아들러",
+    authorEn: "Alfred Adler",
+    source: "개인심리학 실천과 이론",
+    year: "1927",
+    quoteKo: "인간의 모든 고민은 대인관계에서 비롯된다. 행복해지기 위해서는 미움받을 용기가 필요하다.",
+    quoteOriginal: "The courage to be happy also includes the courage to be disliked.",
+    insight: "모든 사람에게 좋은 사람으로 남으려는 완벽주의는 영혼을 갉아먹습니다. 타인의 과제와 나의 과제를 분리하고 내 길을 갈 수 있어야 진정한 자유를 얻습니다.",
+    tags: ["과제분리", "미움받을용기", "대인관계"]
+  },
+  {
+    id: "psych-4",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "지그문트 프로이트",
+    authorEn: "Sigmund Freud",
+    source: "문명과 그 불만 (Civilization and Its Discontents)",
+    year: "1930",
+    quoteKo: "표현되지 않은 감정은 결코 죽지 않는다. 그 감정들은 생매장당한 채, 나중에 훨씬 더 추한 모습으로 나타난다.",
+    quoteOriginal: "Unexpressed emotions will never die. They are buried alive and will come forth later in uglier ways.",
+    insight: "슬픔, 분노, 두려움을 무리하게 억누르면 신체화 증상이나 무기력으로 변질됩니다. 마음의 감정들을 솔직하게 인정하고 건강한 언어로 배출해야 합니다.",
+    tags: ["감정억압", "카타르시스", "자기치유"]
+  },
+  {
+    id: "psych-5",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "칼 로저스",
+    authorEn: "Carl Rogers",
+    source: "진정한 사람 되기 (On Becoming a Person)",
+    year: "1961",
+    quoteKo: "기묘한 역설은, 있는 그대로의 나 자신을 온전히 수용할 때 비로소 진정한 변화가 시작된다는 것이다.",
+    quoteOriginal: "The curious paradox is that when I accept myself just as I am, then I can change.",
+    insight: "자신을 채찍질하고 혐오하며 억지로 바꾸려 할 때는 저항만 커집니다. 못난 모습까지 온전히 보듬고 안아줄 때 자연스러운 성장의 싹이 틉니다.",
+    tags: ["무조건적자기수용", "인간중심치료", "자기성장"]
+  },
+  {
+    id: "psych-6",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "에리히 프롬",
+    authorEn: "Erich Fromm",
+    source: "사랑의 기술 (The Art of Loving)",
+    year: "1956",
+    quoteKo: "사랑은 수동적 감정이 아니라 능동적 활동이다. 사랑은 '빠지는' 것이 아니라 '참여하는' 것이다.",
+    quoteOriginal: "Love is not primarily a relationship to a specific person; it is an attitude, an orientation of character.",
+    insight: "성숙한 사랑은 우연히 찾아오는 로맨틱한 열정이 아니라, 배려와 존중, 책임과 지식을 바탕으로 매일 연마해야 하는 고도의 기술이자 삶의 태도입니다.",
+    tags: ["사랑의기술", "성숙한인격", "능동성"]
+  },
+  {
+    id: "psych-7",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "대니얼 카너먼",
+    authorEn: "Daniel Kahneman",
+    source: "생각에 관한 생각 (Thinking, Fast and Slow)",
+    year: "2011",
+    quoteKo: "우리는 우리 자신의 무지를 깨닫지 못하며, 세상에 대해 스스로 얼마나 모르는지를 모른 채 살아간다.",
+    quoteOriginal: "We can be blind to the obvious, and we are also blind to our blindness.",
+    insight: "우리의 직관(시스템 1)은 늘 그럴듯한 착각에 빠집니다. 나의 확신이 편향과 휴리스틱의 산물일 수 있음을 의심하는 메타인지적 겸손이 필요합니다.",
+    tags: ["인지편향", "시스템1과2", "메타인지"]
+  },
+  {
+    id: "psych-8",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "미하이 칙센트미하이",
+    authorEn: "Mihaly Csikszentmihalyi",
+    source: "몰입 (Flow: The Psychology of Optimal Experience)",
+    year: "1990",
+    quoteKo: "인생 최고의 순간은 수동적이거나 휴식을 취할 때가 아니라, 어렵고 가치 있는 일을 완수하기 위해 몸과 마음이 한계까지 뻗어 나갈 때 찾아온다.",
+    quoteOriginal: "The best moments usually occur when a person’s body or mind is stretched to its limits in a voluntary effort to accomplish something difficult and worthwhile.",
+    insight: "적절한 도전과 기술이 균형을 이룰 때 자아를 잊고 행위 그 자체와 하나가 되는 몰입(Flow) 상태야말로 가장 깊은 행복감을 선사합니다.",
+    tags: ["몰입", "최적경험", "성취감"]
+  },
+  {
+    id: "psych-9",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "에이브러햄 매슬로",
+    authorEn: "Abraham Maslow",
+    source: "동기와 성격 (Motivation and Personality)",
+    year: "1954",
+    quoteKo: "만약 당신이 손에 망치만 쥐고 있다면, 세상의 모든 문제를 못으로 보게 될 것이다.",
+    quoteOriginal: "If the only tool you have is a hammer, to treat everything as if it were a nail.",
+    insight: "익숙한 하나의 사고방식이나 해결책에 갇히면 새로운 상황의 미묘함을 놓치게 됩니다. 지적 도구함을 끊임없이 다채롭게 채워야 합니다.",
+    tags: ["도구의함정", "유연한사고", "인지적다양성"]
+  },
+  {
+    id: "psych-10",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "캐럴 드웨크",
+    authorEn: "Carol S. Dweck",
+    source: "마인드셋 (Mindset: The New Psychology of Success)",
+    year: "2006",
+    quoteKo: "실패란 무능력의 증명이 아니라, 아직 도달하지 못했다는 성장 과정의 배움표일 뿐이다.",
+    quoteOriginal: "Becoming is better than being. The passion for stretching yourself and sticking to it is the hallmark of the growth mindset.",
+    insight: "재능이 타고난다고 믿는 고정 마인드셋을 버리고, 노력과 피드백을 통해 뇌 회로가 변화한다는 성장 마인드셋을 가질 때 한계는 사라집니다.",
+    tags: ["성장마인드셋", "배움", "실패의재정의"]
+  },
+  {
+    id: "psych-11",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "브레네 브라운",
+    authorEn: "Brené Brown",
+    source: "취약성의 힘 (Daring Greatly)",
+    year: "2012",
+    quoteKo: "취약성은 나약함이 아니다. 취약성은 용기의 가장 정확한 척도이며, 진정한 연결과 창의성이 태어나는 요람이다.",
+    quoteOriginal: "Vulnerability is not winning or losing; it's having the courage to show up and be seen when we have no control over the outcome.",
+    insight: "완벽한 갑옷을 입고 상처받지 않으려 할수록 타인과 깊은 유대감을 맺을 수 없습니다. 불완전한 나를 솔직히 드러낼 때 비로소 진심 어린 관계가 싹틉니다.",
+    tags: ["취약성", "진정성", "용기"]
+  },
+  {
+    id: "psych-12",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "윌리엄 제임스",
+    authorEn: "William James",
+    source: "심리학의 원리 (The Principles of Psychology)",
+    year: "1890",
+    quoteKo: "우리의 생각과 감정은 행동을 따르고, 행동을 조절함으로써 간접적으로 감정도 다스릴 수 있다.",
+    quoteOriginal: "Action seems to follow feeling, but really action and feeling go together; and by regulating the action, which is under the more direct control of the will, we can indirectly regulate the feeling.",
+    insight: "기분이 좋아질 때까지 마냥 기다리지 마십시오. 용기 있는 자처럼 걷고, 활력 있는 자처럼 먼저 움직이면 마음은 마침내 그 육체를 따라옵니다.",
+    tags: ["신체화", "행동주의", "의지력"]
+  },
+  {
+    id: "psych-13",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "이르빈 얄롬",
+    authorEn: "Irvin D. Yalom",
+    source: "실존주의 심리치료 (Existential Psychotherapy)",
+    year: "1980",
+    quoteKo: "죽음이라는 물리적 사실은 인간을 파멸시키지만, 죽음에 대한 자각은 인간을 구원한다.",
+    quoteOriginal: "Though the physicality of death destroys us, the idea of death may save us.",
+    insight: "생의 유한성을 피하지 않고 응시할 때, 일상의 사소한 집착과 불안은 눈 녹듯 사라지고 지금 이 순간 무엇이 가장 소중한지 맑게 드러납니다.",
+    tags: ["유한성", "실존치료", "본질적삶"]
+  },
+  {
+    id: "psych-14",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "대니얼 길버트",
+    authorEn: "Daniel Gilbert",
+    source: "행복에 걸려 비틀거리다 (Stumbling on Happiness)",
+    year: "2006",
+    quoteKo: "우리는 미래의 우리가 무엇에 행복해할지 예측하는 데 놀라울 정도로 형편없다.",
+    quoteOriginal: "We treat our future selves as though they were our children, spending most of the hours of each day constructing a life for them.",
+    insight: "인간은 좋은 일의 기쁨도 나쁜 일의 비참함도 지나치게 과대평가합니다. 미래에 대한 극단적인 기대나 불안보다 현재의 감각에 닻을 내리는 연습이 중요합니다.",
+    tags: ["행복예측", "정서적적응", "현재지각"]
+  },
+  {
+    id: "psych-15",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "카를 구스타프 융",
+    authorEn: "Carl Gustav Jung",
+    source: "원형과 집단 무의식",
+    year: "1934",
+    quoteKo: "빛을 상상하는 것으로는 밝아지지 않는다. 어둠을 의식으로 가져올 때 비로소 깨달음이 온다.",
+    quoteOriginal: "One does not become enlightened by imagining figures of light, but by making the darkness conscious.",
+    insight: "진정한 긍정은 고통과 그림자를 무조건 외면하는 것이 아닙니다. 내면의 어둡고 혼란스러운 부분까지 솔직하게 품어낼 때 전일적인 온전함에 도달합니다.",
+    tags: ["그림자의통합", "내면치유", "온전함"]
+  },
+  {
+    id: "psych-16",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "가보르 마테",
+    authorEn: "Gabor Maté",
+    source: "몸이 아니라고 말할 때 (When the Body Says No)",
+    year: "2003",
+    quoteKo: "마음이 아니오(No)라고 말하지 못할 때, 몸이 대신 병으로 아니오라고 외친다.",
+    quoteOriginal: "When we have been prevented from learning how to say no, our bodies may end up saying it for us.",
+    insight: "타인의 기대에 맞추느라 무리하게 '착한 사람' 역할을 지속하면 스트레스는 신체 질환으로 폭발합니다. 건강한 경계선을 긋는 것은 생존을 위한 필수입니다.",
+    tags: ["자기경계선", "신체심리", "정서적솔직함"]
+  },
+  {
+    id: "psych-17",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "에드워드 데시 & 리처드 라이언",
+    authorEn: "Edward L. Deci & Richard M. Ryan",
+    source: "자기결정성 이론 (Self-Determination Theory)",
+    year: "1985",
+    quoteKo: "인간의 진정한 동기는 외적 보상이 아닌 자율성, 유능감, 관계성의 충족에서 샘솟는다.",
+    quoteOriginal: "The true wellspring of human motivation is the satisfaction of our basic psychological needs for autonomy, competence, and relatedness.",
+    insight: "당근과 채찍이라는 외부의 통제는 장기적인 열정을 파괴합니다. 내가 스스로 선택하고(자율), 실력을 키우며(유능), 타인과 연결될 때 지속 가능한 에너지가 생깁니다.",
+    tags: ["내적동기", "자기결정성", "자율성"]
+  },
+  {
+    id: "psych-18",
+    category: "psychology",
+    categoryName: "심리학",
+    categoryIcon: "brain",
+    author: "제임스 클리어",
+    authorEn: "James Clear",
+    source: "아주 작은 습관의 힘 (Atomic Habits)",
+    year: "2018",
+    quoteKo: "목표를 높이는 대신 시스템의 수준을 높여라. 당신은 목표의 수준까지 올라가는 것이 아니라 시스템의 수준까지 떨어진다.",
+    quoteOriginal: "You do not rise to the level of your goals. You fall to the level of your systems.",
+    insight: "의지력은 쉽게 고갈되는 배터리와 같습니다. 결심에만 의존하지 말고, 올바른 행동이 저절로 일어날 수밖에 없도록 환경과 일상의 시스템을 재설계해야 합니다.",
+    tags: ["습관형성", "시스템설계", "행동과학"]
+  },
+
+  // ==========================================
+  // 3. 경제학 (ECONOMICS) - 20 Quotes
+  // ==========================================
+  {
+    id: "econ-1",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "애덤 스미스",
+    authorEn: "Adam Smith",
+    source: "국부론 (The Wealth of Nations)",
+    year: "1776",
+    quoteKo: "우리가 저녁 식사를 기대할 수 있는 것은 정육점 주인이나 양조장 주인의 자비심 때문이 아니라, 그들의 자기 이익 추구 덕분이다.",
+    quoteOriginal: "It is not from the benevolence of the butcher, the brewer, or the baker that we expect our dinner, but from their regard to their own self-interest.",
+    insight: "사회적 협력과 번영은 순진한 도덕적 호소보다, 각자의 합리적 인센티브가 조화롭게 맞물리는 시장 메커니즘을 설계할 때 가장 지속 가능해집니다.",
+    tags: ["보이지않는손", "인센티브", "시장경제"]
+  },
+  {
+    id: "econ-2",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "존 메이너드 케인스",
+    authorEn: "John Maynard Keynes",
+    source: "고용·이자 및 화폐의 일반이론",
+    year: "1936",
+    quoteKo: "어려운 것은 새로운 아이디어를 생각해 내는 것이 아니라, 과거의 익숙한 생각들로부터 탈출하는 것이다.",
+    quoteOriginal: "The difficulty lies not so much in developing new ideas as in escaping from old ones.",
+    insight: "패러다임의 전환기에는 검증되지 않은 신기술보다, 과거의 성공 방정식과 낡은 도그마에 집착하는 심리적 관성이 조직과 사회의 발목을 잡습니다.",
+    tags: ["패러다임전환", "사고의유연성", "혁신"]
+  },
+  {
+    id: "econ-3",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "조지프 슘페터",
+    authorEn: "Joseph Schumpeter",
+    source: "자본주의·사회주의·민주주의",
+    year: "1942",
+    quoteKo: "창조적 파괴는 자본주의의 본질적 사실이다. 끊임없이 낡은 것을 파괴하고 새로운 것을 창조한다.",
+    quoteOriginal: "The process of Creative Destruction is the essential fact about capitalism.",
+    insight: "안정적인 현상 유지는 환상에 불과합니다. 스스로 자신의 기존 비즈니스와 안일함을 파괴하고 재창조하지 못하는 주체는 경쟁자에 의해 강제로 도태됩니다.",
+    tags: ["창조적파괴", "기업가정신", "진화적경제"]
+  },
+  {
+    id: "econ-4",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "나심 니콜라스 탈레브",
+    authorEn: "Nassim Nicholas Taleb",
+    source: "블랙 스완 & 안티프래질",
+    year: "2012",
+    quoteKo: "바람은 촛불을 끄지만 장작불은 오히려 활활 타오르게 한다. 당신은 바람을 두려워하는 촛불인가, 바람을 반기는 장작불인가?",
+    quoteOriginal: "Wind extinguishes a candle and energizes fire. You want to be the fire and wish for the wind.",
+    insight: "불확실성과 변동성을 피하려 애쓰는 것은 유약(Fragile)합니다. 충격과 혼란을 흡수하여 오히려 더 강해지는 '안티프래질(Antifragile)'한 회복탄력성을 구축해야 합니다.",
+    tags: ["안티프래질", "불확실성", "생존전략"]
+  },
+  {
+    id: "econ-5",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "프리드리히 하이에크",
+    authorEn: "Friedrich Hayek",
+    source: "사회에서의 지식의 활용 (The Use of Knowledge in Society)",
+    year: "1945",
+    quoteKo: "경제학의 진정한 호기심은 인간이 설계하지 않은 질서가 어떻게 스스로 조정되는지를 보여주는 데 있다.",
+    quoteOriginal: "The curious task of economics is to demonstrate to men how little they really know about what they imagine they can design.",
+    insight: "어떤 천재적 관료나 중앙 통제자도 수많은 개인들이 가진 분산된 지식과 실시간 가격 신호를 능가할 수 없습니다. 자생적 질서에 대한 존중이 필요합니다.",
+    tags: ["자생적질서", "지식의분산", "자유주의"]
+  },
+  {
+    id: "econ-6",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "워런 버핏",
+    authorEn: "Warren Buffett",
+    source: "버크셔 해서웨이 주주서한",
+    year: "1986",
+    quoteKo: "가격은 당신이 지불하는 것이고, 가치는 당신이 얻는 것이다.",
+    quoteOriginal: "Price is what you pay; value is what you get.",
+    insight: "시장의 단기적인 광기와 소음은 수시로 가격을 요동치게 만듭니다. 현명한 판단자는 출렁이는 가격 뒤에 단단히 버티고 선 본질적 내재가치를 꿰뚫어 봅니다.",
+    tags: ["가치투자", "본질", "장기적시각"]
+  },
+  {
+    id: "econ-7",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "토머스 소웰",
+    authorEn: "Thomas Sowell",
+    source: "기본경제학 (Basic Economics)",
+    year: "2000",
+    quoteKo: "경제학의 첫 번째 교훈은 희소성이다. 모든 사람의 욕망을 만족시키기에 자원은 턱없이 부족하다. 반면 정치의 첫 번째 교훈은 그 경제학의 교훈을 무시하는 것이다.",
+    quoteOriginal: "The first lesson of economics is scarcity: there is never enough of anything to satisfy all those who want it. The first lesson of politics is to disregard the first lesson of economics.",
+    insight: "모든 것을 동시에 얻을 수는 없습니다. 하나를 얻으면 반드시 다른 하나를 포기해야 한다는 '기회비용'과 '트레이드오프'의 냉정한 법칙을 인정해야 합니다.",
+    tags: ["희소성", "기회비용", "현실주의"]
+  },
+  {
+    id: "econ-8",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "존 케네스 갤브레이스",
+    authorEn: "John Kenneth Galbraith",
+    source: "불확실성의 시대 (The Age of Uncertainty)",
+    year: "1977",
+    quoteKo: "경제 예측가들이 존재하는 유일한 이유는 점성술사들을 점잖게 보이도록 만들기 위해서다.",
+    quoteOriginal: "The only function of economic forecasting is to make astrology look respectable.",
+    insight: "복잡계 경제에서 미래를 완벽히 예측하려는 시도는 오만입니다. 미래를 점치려 하지 말고, 어떤 돌발 상황이 닥쳐도 무너지지 않을 견고한 완충장치를 마련해야 합니다.",
+    tags: ["예측의한계", "복잡계", "위기관리"]
+  },
+  {
+    id: "econ-9",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "리처드 탈러",
+    authorEn: "Richard Thaler",
+    source: "넛지 (Nudge)",
+    year: "2008",
+    quoteKo: "사람들을 움직이게 하려면 강제하거나 금지할 필요가 없다. 단지 좋은 선택을 하도록 판을 깔아주는 '넛지'가 필요할 뿐이다.",
+    quoteOriginal: "If you want people to do something, make it easy.",
+    insight: "인간은 완전무결한 이성적 존재가 아닙니다. 디폴트 옵션과 환경 배치를 부드럽게 유도함으로써(선택 설계) 자연스럽게 바람직한 행동을 이끌어낼 수 있습니다.",
+    tags: ["행동경제학", "넛지", "선택설계"]
+  },
+  {
+    id: "econ-10",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "피터 드러커",
+    authorEn: "Peter Drucker",
+    source: "경영의 실제 (The Practice of Management)",
+    year: "1954",
+    quoteKo: "측정할 수 없으면 관리할 수 없고, 관리할 수 없으면 개선할 수 없다.",
+    quoteOriginal: "If you can't measure it, you can't manage it.",
+    insight: "막연한 의지나 주관적 감상만으로는 아무것도 발전시킬 수 없습니다. 핵심 지표를 정량화하고 피드백 루프를 만들 때 시스템은 비로소 진화합니다.",
+    tags: ["데이터기반", "경영원칙", "피드백"]
+  },
+  {
+    id: "econ-11",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "로널드 코스",
+    authorEn: "Ronald Coase",
+    source: "기업의 본질 (The Nature of the Firm)",
+    year: "1937",
+    quoteKo: "시장이 효율적이라면 기업이라는 조직은 왜 존재하는가? 바로 거래비용(Transaction Cost) 때문이다.",
+    quoteOriginal: "A firm will tend to expand until the costs of organizing an extra transaction within the firm become equal to the costs of carrying out the same transaction by means of an exchange on the open market.",
+    insight: "계약, 탐색, 협상, 신뢰 구축에 따르는 숨은 비용(거래비용)을 극적으로 줄이는 기술이나 조직이야말로 거대한 경제적 가치를 창출합니다.",
+    tags: ["거래비용", "기업이론", "효율성"]
+  },
+  {
+    id: "econ-12",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "하워드 막스",
+    authorEn: "Howard Marks",
+    source: "투자에 대한 생각 (The Most Important Thing)",
+    year: "2011",
+    quoteKo: "남들과 똑같이 생각하고 행동하면서 남들보다 뛰어난 성과를 기대할 수는 없다. 2차적 사고(Second-Level Thinking)를 하라.",
+    quoteOriginal: "You can't do the same things other people do and expect to outperform. First-level thinking is simplistic and superficial. Second-level thinking is deep, complex, and convoluted.",
+    insight: "1차적 사고는 겉보기 현상만 보지만, 2차적 사고는 '그 이후에 어떤 반응과 2차 연쇄 효과가 일어날 것인가'를 한 걸음 더 깊이 계산합니다.",
+    tags: ["2차적사고", "역발상", "깊이있는판단"]
+  },
+  {
+    id: "econ-13",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "찰리 멍거",
+    authorEn: "Charlie Munger",
+    source: "가난한 찰리의 알마낙 (Poor Charlie's Almanack)",
+    year: "2005",
+    quoteKo: "문제를 거꾸로 뒤집어 생각하라, 항상 거꾸로!(Invert, always invert!) 성공하는 법을 고민하기 전에 먼저 확실히 망하는 길을 찾아 피하라.",
+    quoteOriginal: "Invert, always invert: Turn a situation or problem upside down. Look at it backward.",
+    insight: "승자가 되기 위해 무리한 묘수를 부리기보다, 파멸을 부르는 치명적인 어리석음과 실수를 줄여나가는 감산의 지혜가 궁극적 승리를 가져옵니다.",
+    tags: ["역발상", "위험회피", "멘탈모델"]
+  },
+  {
+    id: "econ-14",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "밀턴 프리드먼",
+    authorEn: "Milton Friedman",
+    source: "선택할 자유 (Free to Choose)",
+    year: "1980",
+    quoteKo: "세상에 공짜 점심이란 없다(There is no such thing as a free lunch).",
+    quoteOriginal: "There's no such thing as a free lunch.",
+    insight: "어떤 혜택이 공짜처럼 보인다면 그 대가는 보이지 않는 곳에서 누군가가, 혹은 미래의 내가 다른 형태로 치르고 있음을 잊지 말아야 합니다.",
+    tags: ["기회비용", "공짜점심은없다", "경제원칙"]
+  },
+  {
+    id: "econ-15",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "앙투안 드 생텍쥐페리 (경제적 관점의 명문화)",
+    authorEn: "Antoine de Saint-Exupéry",
+    source: "바람과 모래와 별들",
+    year: "1939",
+    quoteKo: "완벽함이란 더 이상 보탤 것이 없을 때가 아니라, 더 이상 뺄 것이 없을 때 달성된다.",
+    quoteOriginal: "Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.",
+    insight: "최적화와 경제성의 정수는 불필요한 군더더기와 기능, 복잡성을 가차 없이 덜어내어 가장 본질적인 핵심 가치만을 남기는 절제에 있습니다.",
+    tags: ["단순함의미학", "최적화", "본질추구"]
+  },
+  {
+    id: "econ-16",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "빌프레도 파레토",
+    authorEn: "Vilfredo Pareto",
+    source: "정치경제학 강의 (Cours d'économie politique)",
+    year: "1896",
+    quoteKo: "결과의 80%는 단 20%의 핵심 원인에서 비롯된다.",
+    quoteOriginal: "80% of consequences come from 20% of the causes.",
+    insight: "모든 일에 에너지를 균등하게 쏟는 것은 비효율입니다. 삶과 비즈니스의 승패를 가르는 결정적 20%를 분별하고 그곳에 자원을 집중해야 합니다.",
+    tags: ["파레토법칙", "레버리지", "핵심집중"]
+  },
+  {
+    id: "econ-17",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "로버트 실러",
+    authorEn: "Robert J. Shiller",
+    source: "비이성적 과열 (Irrational Exuberance)",
+    year: "2000",
+    quoteKo: "투기 거품은 근본적으로 사회적 심리 현상이다. 이야기가 입소문을 타고 사람들의 탐욕과 안도감을 조작한다.",
+    quoteOriginal: "Speculative bubbles are substantially social psychological phenomena. They are driven by contagion of ideas and emotions.",
+    insight: "시장의 거품은 수학적 펀더멘털보다 집단 최면과 군중 심리, 매혹적인 내러티브의 전염으로 형성되므로 항상 군중의 열광에서 한 발짝 물러나야 합니다.",
+    tags: ["비이성적과열", "군중심리", "금융시장"]
+  },
+  {
+    id: "econ-18",
+    category: "economics",
+    categoryName: "경제학",
+    categoryIcon: "trending-up",
+    author: "존 템플턴",
+    authorEn: "John Templeton",
+    source: "템플턴 플랜",
+    year: "1994",
+    quoteKo: "가장 비관적일 때가 가장 낙관적인 매수의 기회이며, 가장 낙관적일 때가 가장 비관적인 매도의 시점이다.",
+    quoteOriginal: "The time of maximum pessimism is the best time to buy, and the time of maximum optimism is the best time to sell.",
+    insight: "공포와 절망이 시장을 집어삼켰을 때가 바로 뛰어난 자산을 헐값에 살 수 있는 선물 같은 시간입니다. 대중의 공포를 이겨내는 역발상이 필요합니다.",
+    tags: ["역발상투자", "위기속기회", "정서적통제"]
+  }
+];
+
+// Bind globally
+window.CATEGORY_META = {
+  philosophy: {
+    name: "철학",
+    nameEn: "PHILOSOPHY",
+    color: "#6366f1", // Indigo
+    badgeBg: "bg-indigo-500/10 text-indigo-400 border-indigo-500/30",
+    gradient: "from-indigo-900/60 via-purple-900/30 to-slate-900/90",
+    glowColor: "rgba(99, 102, 241, 0.25)",
+    icon: `<svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>`
+  },
+  psychology: {
+    name: "심리학",
+    nameEn: "PSYCHOLOGY",
+    color: "#10b981", // Emerald
+    badgeBg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+    gradient: "from-teal-900/60 via-emerald-900/30 to-slate-900/90",
+    glowColor: "rgba(16, 185, 129, 0.25)",
+    icon: `<svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>`
+  },
+  economics: {
+    name: "경제학",
+    nameEn: "ECONOMICS",
+    color: "#f59e0b", // Amber
+    badgeBg: "bg-amber-500/10 text-amber-400 border-amber-500/30",
+    gradient: "from-amber-950/60 via-yellow-950/30 to-slate-900/90",
+    glowColor: "rgba(245, 158, 11, 0.25)",
+    icon: `<svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>`
+  }
+};
+
+</script>
+  <script>
+/**
+ * Insight Card Viewer - Core Application Logic
+ * Optimized for GitHub Pages & Cross-Platform Stability
+ */
+
+(function () {
+  'use strict';
+
+  // --- SAFE GLOBAL DATA ACCESS ---
+  const INSIGHTS = window.INSIGHTS_DATA || [];
+  const META = window.CATEGORY_META || {
+    philosophy: { name: "철학", color: "#6366f1", badgeBg: "bg-indigo-500/10 text-indigo-400 border-indigo-500/30", glowColor: "rgba(99, 102, 241, 0.25)" },
+    psychology: { name: "심리학", color: "#10b981", badgeBg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30", glowColor: "rgba(16, 185, 129, 0.25)" },
+    economics: { name: "경제학", color: "#f59e0b", badgeBg: "bg-amber-500/10 text-amber-400 border-amber-500/30", glowColor: "rgba(245, 158, 11, 0.25)" }
+  };
+
+  // --- STATE ---
+  const state = {
+    category: 'all',          // 'all' | 'philosophy' | 'psychology' | 'economics'
+    currentCard: null,
+    history: [],              // Array of card IDs
+    historyIndex: -1,
+    recentIds: [],            // Recently shown IDs to avoid immediate repeats
+    bookmarks: [],            // Array of saved card IDs
+    soundEnabled: true,
+    animMode: 'deck',         // 'deck' | 'flip'
+    isTransitioning: false
+  };
+
+  // --- SAFE AUDIO SYNTHESIZER (Lazy Loaded on User Gesture) ---
+  let audioCtx = null;
+
+  function getAudioContext() {
+    if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch (e) {
+        console.warn('AudioContext creation failed', e);
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    return audioCtx;
+  }
+
+  function playShuffleSound() {
+    if (!state.soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(120, now + 0.14);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1400, now);
+      filter.frequency.exponentialRampToValueAtTime(250, now + 0.14);
+
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.15);
+    } catch (e) {
+      // Audio errors must never block UI
+    }
+  }
+
+  function playBookmarkSound(isAdded) {
+    if (!state.soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'triangle';
+      if (isAdded) {
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15);
+      } else {
+        osc.frequency.setValueAtTime(659.25, now);
+        osc.frequency.exponentialRampToValueAtTime(440.00, now + 0.15);
+      }
+
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.22);
+    } catch (e) {
+      // Ignore audio error
+    }
+  }
+
+  // --- LOCAL STORAGE HELPERS ---
+  const STORAGE_KEY = 'insight_card_viewer_bookmarks_v1';
+  const SOUND_KEY = 'insight_card_viewer_sound_v1';
+
+  function loadBookmarks() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      state.bookmarks = saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      state.bookmarks = [];
+    }
+  }
+
+  function saveBookmarks() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.bookmarks));
+    } catch (e) {
+      console.error('Failed to save bookmarks', e);
+    }
+    updateBookmarkBadge();
+  }
+
+  function loadSoundSetting() {
+    const saved = localStorage.getItem(SOUND_KEY);
+    if (saved !== null) {
+      state.soundEnabled = saved === 'true';
+    }
+    updateSoundUI();
+  }
+
+  function saveSoundSetting() {
+    localStorage.setItem(SOUND_KEY, state.soundEnabled ? 'true' : 'false');
+    updateSoundUI();
+  }
+
+  // --- DOM ELEMENTS ---
+  const elements = {
+    cardContainer: document.getElementById('card-container'),
+    card: document.getElementById('insight-card'),
+    ambientGlow: document.getElementById('ambient-glow'),
+    categoryBadge: document.getElementById('card-category-badge'),
+    quoteKo: document.getElementById('card-quote-ko'),
+    quoteOriginal: document.getElementById('card-quote-original'),
+    author: document.getElementById('card-author'),
+    authorMeta: document.getElementById('card-author-meta'),
+    insightText: document.getElementById('card-insight-text'),
+    tagsContainer: document.getElementById('card-tags'),
+    btnNext: document.getElementById('btn-next'),
+    btnPrev: document.getElementById('btn-prev'),
+    btnBookmark: document.getElementById('btn-bookmark'),
+    btnBookmarkIcon: document.getElementById('btn-bookmark-icon'),
+    btnCopy: document.getElementById('btn-copy'),
+    btnSaveImage: document.getElementById('btn-save-image'),
+    categoryTabs: document.querySelectorAll('.category-tab'),
+    // Drawer
+    btnOpenDrawer: document.getElementById('btn-open-drawer'),
+    btnCloseDrawer: document.getElementById('btn-close-drawer'),
+    drawerBackdrop: document.getElementById('drawer-backdrop'),
+    drawerPanel: document.getElementById('drawer-panel'),
+    drawerList: document.getElementById('drawer-bookmark-list'),
+    drawerEmpty: document.getElementById('drawer-empty'),
+    drawerBadge: document.getElementById('header-bookmark-badge'),
+    btnClearAllBookmarks: document.getElementById('btn-clear-all-bookmarks'),
+    // Sound & Mode
+    btnToggleSound: document.getElementById('btn-toggle-sound'),
+    soundIcon: document.getElementById('sound-icon'),
+    animModeSelect: document.getElementById('select-anim-mode'),
+    // Toast
+    toast: document.getElementById('toast-notification'),
+    toastText: document.getElementById('toast-text')
+  };
+
+  // --- UTILS ---
+  function showToast(message) {
+    if (!elements.toast || !elements.toastText) return;
+    elements.toastText.textContent = message;
+    elements.toast.classList.remove('hidden');
+    elements.toast.classList.add('toast-enter');
+
+    clearTimeout(elements.toast._timer);
+    elements.toast._timer = setTimeout(() => {
+      elements.toast.classList.add('hidden');
+      elements.toast.classList.remove('toast-enter');
+    }, 2400);
+  }
+
+  function getAvailableCards() {
+    const list = window.INSIGHTS_DATA || INSIGHTS;
+    if (state.category === 'all') {
+      return list;
+    }
+    return list.filter(item => item.category === state.category);
+  }
+
+  function getRandomCard() {
+    const list = getAvailableCards();
+    if (!list || list.length === 0) return null;
+    if (list.length === 1) return list[0];
+
+    const pool = list.filter(card => !state.recentIds.includes(card.id));
+    const effectivePool = pool.length > 0 ? pool : list.filter(c => !state.currentCard || c.id !== state.currentCard.id);
+
+    const randomIndex = Math.floor(Math.random() * effectivePool.length);
+    const chosen = effectivePool[randomIndex];
+
+    state.recentIds.push(chosen.id);
+    if (state.recentIds.length > Math.min(8, Math.floor(list.length / 2))) {
+      state.recentIds.shift();
+    }
+
+    return chosen;
+  }
+
+  // --- CARD RENDERING ---
+  function renderCardContent(card) {
+    if (!card) return;
+    const metaList = window.CATEGORY_META || META;
+    const meta = metaList[card.category] || metaList.philosophy;
+
+    // 1. Category Badge
+    if (elements.categoryBadge) {
+      elements.categoryBadge.className = `inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase border ${meta.badgeBg}`;
+      elements.categoryBadge.innerHTML = `${meta.icon || '✨'} <span>${card.categoryName}</span>`;
+    }
+
+    // 2. Quotes
+    if (elements.quoteKo) elements.quoteKo.textContent = `"${card.quoteKo}"`;
+    if (elements.quoteOriginal) elements.quoteOriginal.textContent = card.quoteOriginal ? `— "${card.quoteOriginal}"` : '';
+
+    // 3. Author & Source
+    if (elements.author) elements.author.textContent = card.author;
+    const metaParts = [];
+    if (card.authorEn) metaParts.push(card.authorEn);
+    if (card.source) metaParts.push(card.source);
+    if (card.year) metaParts.push(`(${card.year})`);
+    if (elements.authorMeta) elements.authorMeta.textContent = metaParts.join(' · ');
+
+    // 4. Insight Text
+    if (elements.insightText) elements.insightText.textContent = card.insight;
+
+    // 5. Tags
+    if (elements.tagsContainer) {
+      elements.tagsContainer.innerHTML = '';
+      if (card.tags && card.tags.length > 0) {
+        card.tags.forEach(tag => {
+          const tagEl = document.createElement('span');
+          tagEl.className = 'px-2.5 py-1 text-xs rounded-lg glass-pill text-slate-300 font-medium hover:text-white transition-colors';
+          tagEl.textContent = `#${tag}`;
+          elements.tagsContainer.appendChild(tagEl);
+        });
+      }
+    }
+
+    // 6. Ambient Glow & Card Glow
+    if (elements.ambientGlow) {
+      elements.ambientGlow.style.backgroundColor = meta.color;
+    }
+    if (elements.card) {
+      elements.card.style.setProperty('--card-glow', meta.glowColor);
+    }
+
+    // 7. Update Bookmark Button State
+    updateBookmarkButtonState();
+
+    // 8. Update Prev Button State
+    if (elements.btnPrev) {
+      elements.btnPrev.disabled = state.historyIndex <= 0;
+      elements.btnPrev.style.opacity = state.historyIndex <= 0 ? '0.35' : '1';
+    }
+  }
+
+  // --- TRANSITION ANIMATION WITH SAFETY WATCHDOG ---
+  let safetyTimer = null;
+
+  function transitionToCard(newCard, direction = 'next') {
+    if (!newCard || state.isTransitioning) return;
+    state.isTransitioning = true;
+
+    // Safety Watchdog: Guarantee release of transition lock within 700ms
+    clearTimeout(safetyTimer);
+    safetyTimer = setTimeout(() => {
+      state.isTransitioning = false;
+      if (elements.card) {
+        elements.card.classList.remove('card-anim-exit-next', 'card-anim-enter-next', 'card-anim-exit-prev', 'card-anim-enter-prev', 'card-anim-flip-exit', 'card-anim-flip-enter');
+        elements.card.style.transform = '';
+      }
+    }, 700);
+
+    // Audio Play
+    playShuffleSound();
+
+    const card = elements.card;
+    if (!card) {
+      state.currentCard = newCard;
+      renderCardContent(newCard);
+      state.isTransitioning = false;
+      return;
+    }
+
+    // Reset inline 3D transform so CSS keyframes execute freely
+    card.style.transform = '';
+
+    const isFlip = state.animMode === 'flip';
+    let exitClass = isFlip ? 'card-anim-flip-exit' : (direction === 'next' ? 'card-anim-exit-next' : 'card-anim-exit-prev');
+    let enterClass = isFlip ? 'card-anim-flip-enter' : (direction === 'next' ? 'card-anim-enter-next' : 'card-anim-enter-prev');
+
+    // Remove any lingering animation classes
+    card.classList.remove('card-anim-exit-next', 'card-anim-enter-next', 'card-anim-exit-prev', 'card-anim-enter-prev', 'card-anim-flip-exit', 'card-anim-flip-enter');
+    card.classList.add(exitClass);
+
+    setTimeout(() => {
+      // Swap data mid-animation
+      state.currentCard = newCard;
+      renderCardContent(newCard);
+
+      card.classList.remove(exitClass);
+      card.classList.add(enterClass);
+
+      setTimeout(() => {
+        card.classList.remove(enterClass);
+        card.style.transform = '';
+        state.isTransitioning = false;
+        clearTimeout(safetyTimer);
+      }, isFlip ? 420 : 460);
+    }, isFlip ? 320 : 380);
+  }
+
+  function showNextCard() {
+    if (state.isTransitioning) return;
+
+    // Check if moving forward in already visited history
+    if (state.historyIndex < state.history.length - 1) {
+      state.historyIndex++;
+      const nextCardId = state.history[state.historyIndex];
+      const list = window.INSIGHTS_DATA || INSIGHTS;
+      const card = list.find(c => c.id === nextCardId);
+      if (card) {
+        transitionToCard(card, 'next');
+        return;
+      }
+    }
+
+    // Pick new random card
+    const nextCard = getRandomCard();
+    if (!nextCard) return;
+
+    state.history.push(nextCard.id);
+    state.historyIndex = state.history.length - 1;
+    transitionToCard(nextCard, 'next');
+  }
+
+  function showPrevCard() {
+    if (state.isTransitioning || state.historyIndex <= 0) return;
+    state.historyIndex--;
+    const prevCardId = state.history[state.historyIndex];
+    const list = window.INSIGHTS_DATA || INSIGHTS;
+    const prevCard = list.find(c => c.id === prevCardId);
+    if (prevCard) {
+      transitionToCard(prevCard, 'prev');
+    }
+  }
+
+  function jumpToCard(cardId) {
+    if (state.isTransitioning) return;
+    const list = window.INSIGHTS_DATA || INSIGHTS;
+    const card = list.find(c => c.id === cardId);
+    if (!card) return;
+
+    if (state.currentCard && state.currentCard.id === cardId) {
+      closeDrawer();
+      return;
+    }
+
+    state.history.push(card.id);
+    state.historyIndex = state.history.length - 1;
+    closeDrawer();
+    transitionToCard(card, 'next');
+  }
+
+  // --- BOOKMARKS ---
+  function isCurrentCardBookmarked() {
+    return state.currentCard && state.bookmarks.includes(state.currentCard.id);
+  }
+
+  function updateBookmarkButtonState() {
+    if (!elements.btnBookmark || !elements.btnBookmarkIcon) return;
+    const bookmarked = isCurrentCardBookmarked();
+
+    if (bookmarked) {
+      elements.btnBookmarkIcon.setAttribute('fill', '#f43f5e');
+      elements.btnBookmarkIcon.setAttribute('stroke', '#f43f5e');
+      elements.btnBookmark.classList.add('text-rose-500', 'border-rose-500/40', 'bg-rose-500/10');
+      elements.btnBookmark.classList.remove('text-slate-300', 'border-slate-700/60');
+    } else {
+      elements.btnBookmarkIcon.setAttribute('fill', 'none');
+      elements.btnBookmarkIcon.setAttribute('stroke', 'currentColor');
+      elements.btnBookmark.classList.remove('text-rose-500', 'border-rose-500/40', 'bg-rose-500/10');
+      elements.btnBookmark.classList.add('text-slate-300', 'border-slate-700/60');
+    }
+  }
+
+  function toggleCurrentBookmark() {
+    if (!state.currentCard) return;
+    const cardId = state.currentCard.id;
+    const index = state.bookmarks.indexOf(cardId);
+    let added = false;
+
+    if (index >= 0) {
+      state.bookmarks.splice(index, 1);
+      added = false;
+      showToast('북마크에서 제거되었습니다.');
+    } else {
+      state.bookmarks.unshift(cardId);
+      added = true;
+      showToast('북마크에 저장되었습니다.');
+      if (elements.btnBookmark) {
+        elements.btnBookmark.classList.remove('anim-heart-pop');
+        void elements.btnBookmark.offsetWidth;
+        elements.btnBookmark.classList.add('anim-heart-pop');
+      }
+    }
+
+    playBookmarkSound(added);
+    saveBookmarks();
+    updateBookmarkButtonState();
+    renderBookmarkDrawerList();
+  }
+
+  function removeBookmark(cardId, e) {
+    if (e) e.stopPropagation();
+    const index = state.bookmarks.indexOf(cardId);
+    if (index >= 0) {
+      state.bookmarks.splice(index, 1);
+      saveBookmarks();
+      updateBookmarkButtonState();
+      renderBookmarkDrawerList();
+      showToast('북마크가 삭제되었습니다.');
+    }
+  }
+
+  function updateBookmarkBadge() {
+    const count = state.bookmarks.length;
+    if (elements.drawerBadge) {
+      elements.drawerBadge.textContent = count;
+      elements.drawerBadge.style.display = count > 0 ? 'inline-flex' : 'none';
+    }
+  }
+
+  function renderBookmarkDrawerList() {
+    if (!elements.drawerList || !elements.drawerEmpty) return;
+
+    if (state.bookmarks.length === 0) {
+      elements.drawerList.innerHTML = '';
+      elements.drawerEmpty.classList.remove('hidden');
+      if (elements.btnClearAllBookmarks) elements.btnClearAllBookmarks.classList.add('hidden');
+      return;
+    }
+
+    elements.drawerEmpty.classList.add('hidden');
+    if (elements.btnClearAllBookmarks) elements.btnClearAllBookmarks.classList.remove('hidden');
+    elements.drawerList.innerHTML = '';
+
+    const list = window.INSIGHTS_DATA || INSIGHTS;
+    const metaList = window.CATEGORY_META || META;
+
+    state.bookmarks.forEach(id => {
+      const card = list.find(c => c.id === id);
+      if (!card) return;
+
+      const meta = metaList[card.category] || metaList.philosophy;
+      const itemEl = document.createElement('div');
+      itemEl.className = 'group relative p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-slate-700/80 hover:bg-slate-800/60 transition-all cursor-pointer flex flex-col gap-2.5';
+      
+      itemEl.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold uppercase ${meta.badgeBg}">
+            ${card.categoryName}
+          </span>
+          <button class="btn-delete-item text-slate-500 hover:text-rose-400 p-1 rounded-md transition-colors" title="북마크 삭제">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+        <p class="text-sm font-medium text-slate-100 line-clamp-2 leading-relaxed">"${card.quoteKo}"</p>
+        <div class="flex items-center justify-between text-xs text-slate-400 pt-1 border-t border-slate-800/80">
+          <span class="truncate font-medium text-slate-300">${card.author}</span>
+          <span class="text-indigo-400/80 group-hover:text-indigo-300 flex items-center gap-1 text-[11px]">카드 보기 &rarr;</span>
+        </div>
+      `;
+
+      itemEl.addEventListener('click', () => jumpToCard(card.id));
+      const deleteBtn = itemEl.querySelector('.btn-delete-item');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', (e) => removeBookmark(card.id, e));
+      }
+
+      elements.drawerList.appendChild(itemEl);
+    });
+  }
+
+  function openDrawer() {
+    renderBookmarkDrawerList();
+    if (elements.drawerBackdrop && elements.drawerPanel) {
+      elements.drawerBackdrop.classList.remove('hidden', 'pointer-events-none');
+      elements.drawerBackdrop.classList.remove('opacity-0');
+      elements.drawerBackdrop.classList.add('opacity-100');
+
+      elements.drawerPanel.classList.remove('translate-x-full');
+      elements.drawerPanel.classList.add('translate-x-0');
+    }
+  }
+
+  function closeDrawer() {
+    if (elements.drawerBackdrop && elements.drawerPanel) {
+      elements.drawerBackdrop.classList.remove('opacity-100');
+      elements.drawerBackdrop.classList.add('opacity-0', 'pointer-events-none');
+
+      elements.drawerPanel.classList.remove('translate-x-0');
+      elements.drawerPanel.classList.add('translate-x-full');
+
+      setTimeout(() => {
+        elements.drawerBackdrop.classList.add('hidden');
+      }, 300);
+    }
+  }
+
+  function clearAllBookmarks() {
+    if (state.bookmarks.length === 0) return;
+    if (confirm('저장된 모든 북마크를 삭제하시겠습니까?')) {
+      state.bookmarks = [];
+      saveBookmarks();
+      updateBookmarkButtonState();
+      renderBookmarkDrawerList();
+      showToast('모든 북마크가 삭제되었습니다.');
+    }
+  }
+
+  // --- CLIPBOARD ---
+  function copyQuoteToClipboard() {
+    if (!state.currentCard) return;
+    const card = state.currentCard;
+    const textToCopy = `"${card.quoteKo}"\n\n— ${card.author} (${card.source || ''})\n\n[인사이트] ${card.insight}`;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        showToast('인사이트 문구가 클립보드에 복사되었습니다!');
+      }).catch(fallbackCopy);
+    } else {
+      fallbackCopy();
+    }
+
+    function fallbackCopy() {
+      const textarea = document.createElement('textarea');
+      textarea.value = textToCopy;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast('인사이트 문구가 클립보드에 복사되었습니다!');
+      } catch (err) {
+        showToast('복사에 실패했습니다.');
+      }
+      document.body.removeChild(textarea);
+    }
+  }
+
+  // --- CANVAS IMAGE EXPORT ---
+  function saveCardAsImage() {
+    if (!state.currentCard) return;
+    const card = state.currentCard;
+    const metaList = window.CATEGORY_META || META;
+    const meta = metaList[card.category] || metaList.philosophy;
+
+    const canvas = document.createElement('canvas');
+    const w = 1200;
+    const h = 1200;
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    // 1. Background
+    const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+    bgGrad.addColorStop(0, '#0a0d16');
+    bgGrad.addColorStop(0.5, '#111827');
+    bgGrad.addColorStop(1, '#090d16');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // 2. Ambient Color Orb
+    const orbGrad = ctx.createRadialGradient(w / 2, 480, 50, w / 2, 480, 500);
+    orbGrad.addColorStop(0, (meta.color || '#6366f1') + '44');
+    orbGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = orbGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // 3. Card Panel
+    const cardX = 100;
+    const cardY = 120;
+    const cardW = 1000;
+    const cardH = 960;
+    const radius = 40;
+
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+    ctx.shadowBlur = 60;
+    ctx.shadowOffsetY = 30;
+
+    ctx.beginPath();
+    ctx.moveTo(cardX + radius, cardY);
+    ctx.lineTo(cardX + cardW - radius, cardY);
+    ctx.quadraticCurveTo(cardX + cardW, cardY, cardX + cardW, cardY + radius);
+    ctx.lineTo(cardX + cardW, cardY + cardH - radius);
+    ctx.quadraticCurveTo(cardX + cardW, cardY + cardH, cardX + cardW - radius, cardY + cardH);
+    ctx.lineTo(cardX + radius, cardY + cardH);
+    ctx.quadraticCurveTo(cardX, cardY + cardH, cardX, cardY + cardH - radius);
+    ctx.lineTo(cardX, cardY + radius);
+    ctx.quadraticCurveTo(cardX, cardY, cardX + radius, cardY);
+    ctx.closePath();
+
+    ctx.fillStyle = 'rgba(20, 27, 45, 0.88)';
+    ctx.fill();
+    ctx.restore();
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 4. Quote Mark Watermark
+    ctx.font = 'italic bold 220px Georgia, serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.fillText('“', cardX + 60, cardY + 220);
+
+    // 5. Category Badge
+    ctx.fillStyle = meta.color || '#6366f1';
+    ctx.font = 'bold 24px -apple-system, sans-serif';
+    ctx.fillText(`• ${card.categoryName.toUpperCase()} INSIGHT`, cardX + 80, cardY + 110);
+
+    // 6. Korean Quote
+    ctx.font = 'bold 44px "Pretendard", -apple-system, sans-serif';
+    ctx.fillStyle = '#f8fafc';
+    const maxTextWidth = 840;
+    const lineHeight = 66;
+
+    function wrapText(text, x, y, maxWidth, lHeight) {
+      const words = text.split(' ');
+      let line = '';
+      let currentY = y;
+
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && n > 0) {
+          ctx.fillText(line, x, currentY);
+          line = words[n] + ' ';
+          currentY += lHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, x, currentY);
+      return currentY + lHeight;
+    }
+
+    let nextY = wrapText(`"${card.quoteKo}"`, cardX + 80, cardY + 240, maxTextWidth, lineHeight);
+
+    // 7. Original Quote
+    if (card.quoteOriginal) {
+      ctx.font = 'italic 26px Georgia, serif';
+      ctx.fillStyle = '#94a3b8';
+      nextY = wrapText(`— "${card.quoteOriginal}"`, cardX + 80, nextY + 10, maxTextWidth, 38);
+    }
+
+    // 8. Divider line
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cardX + 80, nextY + 30);
+    ctx.lineTo(cardX + cardW - 80, nextY + 30);
+    ctx.stroke();
+
+    // 9. Author
+    ctx.font = 'bold 32px "Pretendard", -apple-system, sans-serif';
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillText(card.author, cardX + 80, nextY + 90);
+
+    ctx.font = '22px "Pretendard", -apple-system, sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    const metaStr = `${card.authorEn || ''} ${card.source ? '· ' + card.source : ''} ${card.year ? '(' + card.year + ')' : ''}`;
+    ctx.fillText(metaStr, cardX + 80, nextY + 130);
+
+    // 10. Insight Box
+    const boxY = cardY + cardH - 180;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.fillRect(cardX + 80, boxY, cardW - 160, 110);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+    ctx.strokeRect(cardX + 80, boxY, cardW - 160, 110);
+
+    ctx.font = '22px "Pretendard", -apple-system, sans-serif';
+    ctx.fillStyle = '#cbd5e1';
+    wrapText(card.insight, cardX + 110, boxY + 45, cardW - 220, 32);
+
+    // 11. Watermark
+    ctx.font = '20px -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.fillText('Insight Card Viewer · 철학 · 심리학 · 경제학', cardX + 80, cardY + cardH + 50);
+
+    try {
+      const link = document.createElement('a');
+      link.download = `Insight_${card.category}_${card.author.replace(/\s+/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('고화질 카드 이미지가 다운로드되었습니다!');
+    } catch (e) {
+      console.error(e);
+      showToast('이미지 저장 중 오류가 발생했습니다.');
+    }
+  }
+
+  // --- SOUND TOGGLE ---
+  function updateSoundUI() {
+    if (!elements.soundIcon || !elements.btnToggleSound) return;
+    if (state.soundEnabled) {
+      elements.soundIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>`;
+      elements.btnToggleSound.classList.add('text-indigo-400');
+      elements.btnToggleSound.classList.remove('text-slate-500');
+    } else {
+      elements.soundIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>`;
+      elements.btnToggleSound.classList.remove('text-indigo-400');
+      elements.btnToggleSound.classList.add('text-slate-500');
+    }
+  }
+
+  function toggleSound() {
+    state.soundEnabled = !state.soundEnabled;
+    saveSoundSetting();
+    showToast(state.soundEnabled ? '효과음이 켜졌습니다.' : '효과음이 꺼졌습니다.');
+  }
+
+  // --- CATEGORIES ---
+  function setCategory(category) {
+    if (state.category === category) return;
+    state.category = category;
+
+    elements.categoryTabs.forEach(tab => {
+      const cat = tab.getAttribute('data-category');
+      if (cat === category) {
+        tab.classList.add('active', 'bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-500/25');
+        tab.classList.remove('text-slate-400', 'hover:text-slate-200', 'bg-transparent');
+      } else {
+        tab.classList.remove('active', 'bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-500/25');
+        tab.classList.add('text-slate-400', 'hover:text-slate-200', 'bg-transparent');
+      }
+    });
+
+    state.recentIds = [];
+    showNextCard();
+  }
+
+  // --- INTERACTIVE 3D TILT ---
+  function setupCardTilt() {
+    const card = elements.card;
+    if (!card) return;
+
+    card.addEventListener('mousemove', (e) => {
+      if (state.isTransitioning) return;
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      // Realistic 3D Tilt: Up to 12 degrees
+      const rotateX = ((y - centerY) / centerY) * -12;
+      const rotateY = ((x - centerX) / centerX) * 12;
+
+      card.style.transform = `perspective(1200px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(10px)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+      if (state.isTransitioning) return;
+      card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+    });
+  }
+
+  // --- TOUCH SWIPE FOR MOBILE ---
+  function setupTouchSwipe() {
+    const card = elements.card;
+    if (!card) return;
+    let startX = 0;
+    let startY = 0;
+
+    card.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+
+    card.addEventListener('touchend', (e) => {
+      if (state.isTransitioning) return;
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      const diffX = endX - startX;
+      const diffY = endY - startY;
+
+      if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX < 0) {
+          showNextCard();
+        } else {
+          showPrevCard();
+        }
+      }
+    }, { passive: true });
+  }
+
+  // --- KEYBOARD SHORTCUTS ---
+  function setupKeyboardShortcuts() {
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if (e.code === 'Space' || e.key === 'Enter' || e.code === 'ArrowRight') {
+        e.preventDefault();
+        showNextCard();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        showPrevCard();
+      } else if (e.key === 'b' || e.key === 'B' || e.key === 'ㅠ') {
+        e.preventDefault();
+        toggleCurrentBookmark();
+      } else if (e.key === 'c' || e.key === 'C' || e.key === 'ㅊ') {
+        e.preventDefault();
+        copyQuoteToClipboard();
+      } else if (e.key === 'm' || e.key === 'M' || e.key === 'ㅡ') {
+        e.preventDefault();
+        toggleSound();
+      } else if (e.key === 'Escape') {
+        closeDrawer();
+      }
+    });
+  }
+
+  // --- INITIALIZATION ---
+  function init() {
+    loadBookmarks();
+    loadSoundSetting();
+    updateBookmarkBadge();
+
+    // Event Listeners with Safe Wrapping
+    if (elements.btnNext) {
+      elements.btnNext.addEventListener('click', (e) => {
+        e.preventDefault();
+        showNextCard();
+      });
+    }
+    if (elements.btnPrev) {
+      elements.btnPrev.addEventListener('click', (e) => {
+        e.preventDefault();
+        showPrevCard();
+      });
+    }
+    if (elements.btnBookmark) {
+      elements.btnBookmark.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleCurrentBookmark();
+      });
+    }
+    if (elements.btnCopy) {
+      elements.btnCopy.addEventListener('click', (e) => {
+        e.preventDefault();
+        copyQuoteToClipboard();
+      });
+    }
+    if (elements.btnSaveImage) {
+      elements.btnSaveImage.addEventListener('click', (e) => {
+        e.preventDefault();
+        saveCardAsImage();
+      });
+    }
+
+    // Drawer Listeners
+    if (elements.btnOpenDrawer) elements.btnOpenDrawer.addEventListener('click', openDrawer);
+    if (elements.btnCloseDrawer) elements.btnCloseDrawer.addEventListener('click', closeDrawer);
+    if (elements.drawerBackdrop) elements.drawerBackdrop.addEventListener('click', closeDrawer);
+    if (elements.btnClearAllBookmarks) {
+      elements.btnClearAllBookmarks.addEventListener('click', clearAllBookmarks);
+    }
+
+    // Sound & Mode
+    if (elements.btnToggleSound) elements.btnToggleSound.addEventListener('click', toggleSound);
+    if (elements.animModeSelect) {
+      elements.animModeSelect.addEventListener('change', (e) => {
+        state.animMode = e.target.value;
+      });
+    }
+
+    // Category Tabs
+    elements.categoryTabs.forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        e.preventDefault();
+        const cat = tab.getAttribute('data-category');
+        setCategory(cat);
+      });
+    });
+
+    setupCardTilt();
+    setupTouchSwipe();
+    setupKeyboardShortcuts();
+
+    // Render Initial First Card Instantly (WITHOUT transition lock)
+    const initialCard = getRandomCard();
+    if (initialCard) {
+      state.currentCard = initialCard;
+      state.history.push(initialCard.id);
+      state.historyIndex = 0;
+      renderCardContent(initialCard);
+    }
+  }
+
+  // Ensure DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+</script>
+</body>
+</html>

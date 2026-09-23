@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>인사이트 카드 뷰어 | 철학·심리학·경제학의 깊은 통찰</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💡</text></svg>">
+  
+  <!-- Web Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              philosophy: '#6366f1',
+              psychology: '#10b981',
+              economics: '#f59e0b'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- External Stylesheet with Fallback Support -->
+  <link rel="stylesheet" href="./css/style.css">
+
+  <style>
+    /* Inlined Core 3D Styles to Guarantee 100% Functionality on GitHub Pages */
+    :root {
+      --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: #0b0f19;
+      color: #f1f5f9;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-serif-quote {
+      font-family: var(--font-serif);
+    }
+
+    /* Ambient Glow */
+    .ambient-glow {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 580px;
+      height: 580px;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.38;
+      pointer-events: none;
+      transition: background-color 0.8s ease;
+      z-index: 0;
+    }
+
+    /* 3D Perspective Stage */
+    .card-stage {
+      perspective: 1200px;
+      -webkit-perspective: 1200px;
+      perspective-origin: 50% 50%;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+    }
+
+    /* Main Insight Card with True 3D transforms */
+    .insight-card {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      min-height: 490px;
+      background: rgba(18, 24, 38, 0.85);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 30px;
+      box-shadow: 
+        0 25px 60px -15px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      will-change: transform, opacity;
+      transition: box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+
+    .insight-card:hover {
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: 
+        0 35px 70px -15px rgba(0, 0, 0, 0.85),
+        0 0 45px -10px var(--card-glow, rgba(99, 102, 241, 0.25)),
+        0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    }
+
+    .quote-watermark {
+      position: absolute;
+      top: 20px;
+      left: 28px;
+      font-family: var(--font-serif);
+      font-size: 150px;
+      line-height: 1;
+      color: rgba(255, 255, 255, 0.035);
+      pointer-events: none;
+      user-select: none;
+      font-style: italic;
+      font-weight: 700;
+      z-index: 0;
+    }
+
+    /* Dramatic 3D Card Transition Animations */
+    .card-anim-exit-next {
+      animation: cardExit3DNext 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+    .card-anim-enter-next {
+      animation: cardEnter3DNext 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+    .card-anim-exit-prev {
+      animation: cardExit3DPrev 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+    .card-anim-enter-prev {
+      animation: cardEnter3DPrev 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+
+    @keyframes cardExit3DNext {
+      0% {
+        transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg) rotateX(0deg);
+        opacity: 1;
+        filter: blur(0px);
+      }
+      100% {
+        transform: perspective(1200px) translate3d(-180px, -15px, -180px) rotateY(-28deg) rotateZ(-3deg);
+        opacity: 0;
+        filter: blur(6px);
+      }
+    }
+
+    @keyframes cardEnter3DNext {
+      0% {
+        transform: perspective(1200px) translate3d(180px, 15px, -180px) rotateY(28deg) rotateZ(3deg);
+        opacity: 0;
+        filter: blur(6px);
+      }
+      100% {
+        transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg) rotateX(0deg) rotateZ(0deg);
+        opacity: 1;
+        filter: blur(0px);
+      }
+    }
+
+    @keyframes cardExit3DPrev {
+      0% {
+        transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
+        opacity: 1;
+        filter: blur(0px);
+      }
+      100% {
+        transform: perspective(1200px) translate3d(180px, -15px, -180px) rotateY(28deg) rotateZ(3deg);
+        opacity: 0;
+        filter: blur(6px);
+      }
+    }
+
+    @keyframes cardEnter3DPrev {
+      0% {
+        transform: perspective(1200px) translate3d(-180px, 15px, -180px) rotateY(-28deg) rotateZ(-3deg);
+        opacity: 0;
+        filter: blur(6px);
+      }
+      100% {
+        transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
+        opacity: 1;
+        filter: blur(0px);
+      }
+    }
+
+    /* 3D Flip */
+    .card-anim-flip-exit {
+      animation: cardFlip3DExit 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+    .card-anim-flip-enter {
+      animation: cardFlip3DEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+
+    @keyframes cardFlip3DExit {
+      0% { transform: perspective(1200px) rotateY(0deg) translateZ(0); opacity: 1; }
+      100% { transform: perspective(1200px) rotateY(90deg) translateZ(-100px) scale(0.9); opacity: 0; }
+    }
+    @keyframes cardFlip3DEnter {
+      0% { transform: perspective(1200px) rotateY(-90deg) translateZ(-100px) scale(0.9); opacity: 0; }
+      100% { transform: perspective(1200px) rotateY(0deg) translateZ(0) scale(1); opacity: 1; }
+    }
+
+    /* Button Shimmer */
+    @keyframes shimmerWave {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .btn-shimmer {
+      background: linear-gradient(
+        90deg,
+        rgba(99, 102, 241, 1) 0%,
+        rgba(168, 85, 247, 1) 35%,
+        rgba(236, 72, 153, 1) 65%,
+        rgba(99, 102, 241, 1) 100%
+      );
+      background-size: 200% auto;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .btn-shimmer:hover {
+      animation: shimmerWave 2.2s linear infinite;
+      box-shadow: 0 0 28px rgba(168, 85, 247, 0.5);
+    }
+    .btn-shimmer:active {
+      transform: scale(0.98);
+    }
+
+    /* Glass Pills */
+    .glass-pill {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Heart Pop */
+    @keyframes heartPop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.4) rotate(-8deg); }
+      75% { transform: scale(0.9) rotate(4deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    .anim-heart-pop {
+      animation: heartPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Toast */
+    @keyframes toastSlideUp {
+      0% { opacity: 0; transform: translate(-50%, 20px) scale(0.95); }
+      100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    }
+    .toast-enter {
+      animation: toastSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col justify-between relative selection:bg-indigo-500/30 selection:text-indigo-200">
+
+  <!-- Ambient Glow Effect -->
+  <div id="ambient-glow" class="ambient-glow bg-indigo-600"></div>
+
+  <!-- Background Grid -->
+  <div class="fixed inset-0 bg-[linear-gradient(to_right,#1e293b0f_1px,transparent_1px),linear-gradient(to_bottom,#1e293b0f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none z-0"></div>
+
+  <!-- Header -->
+  <header class="relative z-10 w-full max-w-6xl mx-auto px-5 py-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-[1px] shadow-lg shadow-indigo-500/20">
+        <div class="w-full h-full bg-[#0d121f] rounded-[15px] flex items-center justify-center text-lg">
+          💡
+        </div>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+          인사이트 카드 뷰어
+        </h1>
+        <p class="text-xs text-slate-400 font-medium">철학 · 심리학 · 경제학의 정수</p>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- 3D Motion Mode Selector -->
+      <div class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-400">
+        <span>3D 모션:</span>
+        <select id="select-anim-mode" class="bg-transparent text-slate-200 font-medium focus:outline-none cursor-pointer">
+          <option value="deck" class="bg-slate-900 text-slate-200">덱 스와이프</option>
+          <option value="flip" class="bg-slate-900 text-slate-200">3D 플립</option>
+        </select>
+      </div>
+
+      <!-- Mute/Sound Toggle -->
+      <button id="btn-toggle-sound" class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-indigo-400 transition-all shadow-sm" title="사운드 켜기/끄기 (M)">
+        <svg id="sound-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+        </svg>
+      </button>
+
+      <!-- Bookmark Drawer Toggle -->
+      <button id="btn-open-drawer" class="relative flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white transition-all shadow-sm group">
+        <svg class="w-4 h-4 text-rose-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <span class="text-xs font-semibold">내 북마크</span>
+        <span id="header-bookmark-badge" style="display:none;" class="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-rose-500 text-white min-w-[18px] text-center">
+          0
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Category Filter Tabs -->
+  <nav class="relative z-10 w-full max-w-xl mx-auto px-4 mb-2">
+    <div class="flex items-center justify-between p-1.5 rounded-2xl bg-slate-900/80 border border-slate-800/80 backdrop-blur-md shadow-inner">
+      <button class="category-tab active flex-1 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-500/25" data-category="all">
+        전체 보기
+      </button>
+      <button class="category-tab flex-1 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-slate-200" data-category="philosophy">
+        철학
+      </button>
+      <button class="category-tab flex-1 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-slate-200" data-category="psychology">
+        심리학
+      </button>
+      <button class="category-tab flex-1 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-slate-200" data-category="economics">
+        경제학
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Card Section -->
+  <main class="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-4 w-full">
+    <div id="card-container" class="card-stage w-full flex justify-center items-center">
+      
+      <!-- 3D Card Article -->
+      <article id="insight-card" class="insight-card p-7 sm:p-10 flex flex-col justify-between">
+        <span class="quote-watermark">“</span>
+
+        <!-- Top: Category Badge -->
+        <div>
+          <div class="flex items-center justify-between mb-6">
+            <span id="card-category-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase border bg-indigo-500/10 text-indigo-400 border-indigo-500/30">
+              철학
+            </span>
+            <span class="text-xs text-slate-500 flex items-center gap-1 font-mono">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+              랜덤 인사이트
+            </span>
+          </div>
+
+          <!-- Main Quote -->
+          <div class="mb-4">
+            <h2 id="card-quote-ko" class="text-2xl sm:text-3xl lg:text-[32px] font-bold text-slate-100 leading-snug sm:leading-snug tracking-tight">
+              "나를 죽이지 못하는 고통은 나를 더욱 강하게 만든다."
+            </h2>
+          </div>
+
+          <!-- Original Quote -->
+          <p id="card-quote-original" class="font-serif-quote italic text-sm sm:text-base text-slate-400 font-normal mb-6 leading-relaxed">
+            — "Was mich nicht umbringt, macht mich stärker."
+          </p>
+
+          <!-- Author Info -->
+          <div class="flex flex-col gap-0.5 border-l-2 border-indigo-500/50 pl-3.5 mb-6">
+            <span id="card-author" class="text-base sm:text-lg font-bold text-slate-200">
+              프리드리히 니체
+            </span>
+            <span id="card-author-meta" class="text-xs sm:text-sm text-slate-400 font-medium">
+              Friedrich Nietzsche · 우상의 황혼 (1889)
+            </span>
+          </div>
+        </div>
+
+        <!-- Middle: Deep Insight Note -->
+        <div class="mt-2 mb-6">
+          <div class="p-4 sm:p-4.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm">
+            <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
+              <span>🌱 사유의 씨앗</span>
+            </div>
+            <p id="card-insight-text" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              시련과 실존적 고뇌는 피해야 할 재앙이 아니라, 영혼의 군살을 깎아내고 주체성을 단련시키는 가장 순수한 촉매제입니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Bottom Tools & Tags -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-800/80">
+          <div id="card-tags" class="flex flex-wrap items-center gap-1.5">
+            <span class="px-2.5 py-1 text-xs rounded-lg glass-pill text-slate-300">#자기극복</span>
+            <span class="px-2.5 py-1 text-xs rounded-lg glass-pill text-slate-300">#성장의지</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Bookmark Button -->
+            <button id="btn-bookmark" class="p-2.5 rounded-xl border border-slate-700/60 bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 transition-all flex items-center gap-1.5 text-xs font-medium cursor-pointer" title="내 북마크에 추가 (B)">
+              <svg id="btn-bookmark-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+              <span class="hidden sm:inline">북마크</span>
+            </button>
+
+            <!-- Copy Text Button -->
+            <button id="btn-copy" class="p-2.5 rounded-xl border border-slate-700/60 bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white transition-all cursor-pointer" title="문구 복사하기 (C)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+              </svg>
+            </button>
+
+            <!-- Save Image Button -->
+            <button id="btn-save-image" class="p-2.5 rounded-xl border border-slate-700/60 bg-slate-800/40 hover:bg-slate-700/50 text-slate-300 hover:text-white transition-all cursor-pointer" title="카드 이미지 저장 (PNG)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="mt-7 flex items-center justify-center gap-3 w-full max-w-md">
+      <!-- Prev Button -->
+      <button id="btn-prev" class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all shadow-lg active:scale-95 disabled:opacity-30 disabled:pointer-events-none cursor-pointer" title="이전 카드 보기 (←)">
+        <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+
+      <!-- Next Insight Button -->
+      <button id="btn-next" class="btn-shimmer flex-1 py-4 px-6 rounded-2xl text-white font-bold text-base tracking-wide flex items-center justify-center gap-2.5 shadow-xl shadow-indigo-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer" title="다음 인사이트 보기 (Space)">
+        <svg class="w-5 h-5 animate-pulse pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        <span class="pointer-events-none">다음 인사이트 보기</span>
+        <kbd class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono bg-white/20 rounded-md text-white/90 pointer-events-none">Space</kbd>
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer Shortcuts -->
+  <footer class="relative z-10 w-full py-4 text-center text-xs text-slate-500">
+    <div class="flex items-center justify-center flex-wrap gap-x-4 gap-y-1">
+      <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">Space</kbd> 다음 문구</span>
+      <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">B</kbd> 북마크</span>
+      <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">C</kbd> 문구 복사</span>
+      <span class="hidden sm:inline"><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">M</kbd> 소리 켜기/끄기</span>
+    </div>
+  </footer>
+
+  <!-- Drawer: '내 북마크' -->
+  <div id="drawer-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity"></div>
+  
+  <aside id="drawer-panel" class="drawer-panel fixed top-0 right-0 h-full w-full sm:w-[420px] bg-[#0d1322] border-l border-slate-800/90 z-50 flex flex-col justify-between translate-x-full shadow-2xl">
+    <div class="p-6 border-b border-slate-800/80 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="p-2 rounded-xl bg-rose-500/10 text-rose-400">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="font-bold text-base text-slate-100">내 북마크 컬렉션</h3>
+          <p class="text-xs text-slate-400">마음에 닿은 소중한 사유의 기록</p>
+        </div>
+      </div>
+      <button id="btn-close-drawer" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer" title="닫기 (Esc)">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-5 space-y-3.5" id="drawer-scroll-container">
+      <div id="drawer-empty" class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
+        <div class="w-16 h-16 rounded-full bg-slate-800/50 flex items-center justify-center text-2xl mb-3">
+          📑
+        </div>
+        <p class="font-semibold text-slate-300 text-sm mb-1">아직 북마크한 문구가 없습니다</p>
+        <p class="text-xs text-slate-400 max-w-[220px]">
+          카드 하단의 하트 아이콘이나 단축키 <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[10px]">B</kbd>를 눌러 마음에 드는 인사이트를 모아보세요.
+        </p>
+      </div>
+      <div id="drawer-bookmark-list" class="space-y-3"></div>
+    </div>
+
+    <div class="p-4 border-t border-slate-800/80 bg-slate-950/40 flex items-center justify-between">
+      <button id="btn-clear-all-bookmarks" class="text-xs text-rose-400 hover:text-rose-300 font-medium transition-colors hidden cursor-pointer">
+        북마크 전체 비우기
+      </button>
+      <span class="text-xs text-slate-500 ml-auto">카드를 누르면 해당 문구로 이동합니다</span>
+    </div>
+  </aside>
+
+  <!-- Toast Notification -->
+  <div id="toast-notification" class="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-slate-900/95 border border-slate-700 text-slate-100 text-xs sm:text-sm font-semibold shadow-2xl backdrop-blur-md hidden flex items-center gap-2">
+    <span class="text-emerald-400">✓</span>
+    <span id="toast-text">알림 내용</span>
+  </div>
+
+  <!-- Scripts: Loaded with relative paths (./) for GitHub Pages compatibility -->
+  <script src="./js/data.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>

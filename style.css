@@ -1,0 +1,295 @@
+/* ==========================================================================
+   Insight Card Viewer - 3D Perspective & Smooth Transition Styles
+   Optimized for GitHub Pages & All Browsers
+   ========================================================================== */
+
+/* Web Fonts Import */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap');
+
+:root {
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #0b0f19;
+  color: #f1f5f9;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-serif-quote {
+  font-family: var(--font-serif);
+}
+
+/* Custom Scrollbar for Drawer & Modal */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}
+
+/* Dynamic Ambient Glow */
+.ambient-glow {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 580px;
+  height: 580px;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.38;
+  pointer-events: none;
+  transition: background-color 0.8s ease, transform 0.8s ease;
+  z-index: 0;
+}
+
+/* 3D Perspective Container Stage */
+.card-stage {
+  perspective: 1200px;
+  -webkit-perspective: 1200px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+/* Main Card Styling with Deep 3D Properties */
+.insight-card {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  min-height: 490px;
+  background: rgba(18, 24, 38, 0.82);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 30px;
+  box-shadow: 
+    0 25px 60px -15px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform, opacity;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.insight-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 35px 70px -15px rgba(0, 0, 0, 0.85),
+    0 0 45px -10px var(--card-glow, rgba(99, 102, 241, 0.22)),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+}
+
+/* Elegant Quote Mark in Background */
+.quote-watermark {
+  position: absolute;
+  top: 20px;
+  left: 28px;
+  font-family: var(--font-serif);
+  font-size: 150px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.035);
+  pointer-events: none;
+  user-select: none;
+  font-style: italic;
+  font-weight: 700;
+  z-index: 0;
+}
+
+/* ==========================================================================
+   Dramatic 3D Card Transition Animations
+   ========================================================================== */
+
+/* 1. Dramatic 3D Deck Next (Going Forward) */
+.card-anim-exit-next {
+  animation: cardExit3DNext 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+.card-anim-enter-next {
+  animation: cardEnter3DNext 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes cardExit3DNext {
+  0% {
+    transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg) rotateX(0deg);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: perspective(1200px) translate3d(-180px, -15px, -180px) rotateY(-28deg) rotateZ(-3deg);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+@keyframes cardEnter3DNext {
+  0% {
+    transform: perspective(1200px) translate3d(180px, 15px, -180px) rotateY(28deg) rotateZ(3deg);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  100% {
+    transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg) rotateX(0deg) rotateZ(0deg);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+/* 2. Dramatic 3D Deck Prev (Going Backward) */
+.card-anim-exit-prev {
+  animation: cardExit3DPrev 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+.card-anim-enter-prev {
+  animation: cardEnter3DPrev 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes cardExit3DPrev {
+  0% {
+    transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: perspective(1200px) translate3d(180px, -15px, -180px) rotateY(28deg) rotateZ(3deg);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+@keyframes cardEnter3DPrev {
+  0% {
+    transform: perspective(1200px) translate3d(-180px, 15px, -180px) rotateY(-28deg) rotateZ(-3deg);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  100% {
+    transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+/* 3. True 3D Flip Animation */
+.card-anim-flip-exit {
+  animation: cardFlip3DExit 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+.card-anim-flip-enter {
+  animation: cardFlip3DEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes cardFlip3DExit {
+  0% {
+    transform: perspective(1200px) rotateY(0deg) translateZ(0);
+    opacity: 1;
+  }
+  100% {
+    transform: perspective(1200px) rotateY(90deg) translateZ(-100px) scale(0.9);
+    opacity: 0;
+  }
+}
+
+@keyframes cardFlip3DEnter {
+  0% {
+    transform: perspective(1200px) rotateY(-90deg) translateZ(-100px) scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(1200px) rotateY(0deg) translateZ(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Bookmark Heart Pop Animation */
+@keyframes heartPop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.4) rotate(-8deg); }
+  75% { transform: scale(0.9) rotate(4deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.anim-heart-pop {
+  animation: heartPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Primary Shimmer Button */
+@keyframes shimmerWave {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.btn-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(99, 102, 241, 1) 0%,
+    rgba(168, 85, 247, 1) 35%,
+    rgba(236, 72, 153, 1) 65%,
+    rgba(99, 102, 241, 1) 100%
+  );
+  background-size: 200% auto;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-shimmer:hover {
+  animation: shimmerWave 2.2s linear infinite;
+  box-shadow: 0 0 28px rgba(168, 85, 247, 0.5);
+}
+
+.btn-shimmer:active {
+  transform: scale(0.98);
+}
+
+/* Glass Floating Pills */
+.glass-pill {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Drawer Transitions */
+.drawer-backdrop {
+  transition: opacity 0.3s ease;
+}
+
+.drawer-panel {
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Toast Notification Animation */
+@keyframes toastSlideUp {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+.toast-enter {
+  animation: toastSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
